@@ -178,6 +178,21 @@ https://github.com/auth0/java-jwt
 ```
 
 
+3. Agregamos la dependencia para envío de emails.
+```jsx title="Agregar dependencia envío emails"
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-mail</artifactId>
+</dependency>
+
+<dependency>
+	<groupId>com.sun.mail</groupId>
+	<artifactId>jakarta.mail</artifactId>
+	<version>2.0.1</version> 
+</dependency>
+```
+
+
 ### *Configuraciones en el application.properties*
 - Base de datos mediante variables de entorno.
 
@@ -191,13 +206,38 @@ spring.datasource.password=${BD_PASSWORD}
 
 - Clave privada para la firma del token (JWT).
 
-
 ```jsx title="Configuraciones de JWT"
 #Config de JWT
 security.jwt.private.key=${PRIVATE_KEY}
-#Acá puedo "inventar" el "nombre de usuario" que quiera
+#Usuario generador del Token - Poner uno representativo
 security.jwt.user.generator=${USER_GENERATOR}
 
+```
+
+- Configuración para oatuh2
+
+```jsx title="oauth2"
+#Configuración para Google
+spring.security.oauth2.client.registration.google.client-id=${GOOGLE_CLIENT_ID}
+spring.security.oauth2.client.registration.google.client-secret=${GOOGLE_CLIENT_SECRET}
+```
+
+- Configuración para envío de emails
+
+```jsx title="Configuración para envío de emails"
+# Configuración básica del servidor de correo
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=${EMAIL_USERNAME}
+spring.mail.password=${EMAIL_PASSWORD}
+
+# Propiedades adicionales para autenticación y cifrado
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.connectiontimeout=5000
+spring.mail.properties.mail.smtp.timeout=5000
+spring.mail.properties.mail.smtp.writetimeout=5000
+spring.mail.properties.mail.smtp.ssl.trust=smtp.gmail.com
 ```
 
 ## Creación Package model
@@ -1554,3 +1594,207 @@ Obtendremos las credenciales para colocar en las variables de entorno del applic
 :::
 
 ![google diez](/img/google10.png)
+
+
+## **Implementación envío de emails para recuperar contraseña**
+
+#### Flujo del proceso.
+
+1. El usuario hace clic en "Restablecer Contraseña":
+
+    -   El usuario navega a la página de restablecimiento de contraseña y proporciona su email.
+
+
+2. El endpoint **/auth/request-reset-password** es llamado:
+
+    -   Se envía una solicitud POST a http://localhost:8080/auth/request-reset-password con el parámetro email.
+
+
+3.  El controlador **AuthenticationController** maneja la solicitud:
+
+4.  El servicio **UserService** genera un token y envía un email:
+
+    -   createPasswordResetTokenForUser(email) en UserService genera un token y lo guarda en la base de datos.
+
+    -   Envía un email al usuario con el enlace de restablecimiento de contraseña que incluye el token.
+
+
+5.  El usuario hace clic en el enlace del email:
+
+    -   El enlace lleva al usuario a una página para ingresar una nueva contraseña y envía una solicitud POST a **/auth/reset-password** con el token y la nueva contraseña.
+
+6. Se llama al endpoint **/auth/reset-password**
+
+    -   Se envía una solicitud POST a http://localhost:8080/auth/reset-password con los parámetros token y newPassword.
+
+
+7. El controlador **AuthenticationController** maneja la solicitud.
+
+8. El servicio UserService valida el token y actualiza la contraseña:
+
+    -   **validatePasswordResetToken(token)** valida el token.
+
+    -  **updatePassword(token, newPassword)** actualiza la contraseña y borra el token de la base de datos.
+
+
+
+
+
+----------------
+
+
+### *Incorporar dependencia*
+
+```jsx title=""
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-mail</artifactId>
+</dependency>
+
+<dependency>
+	<groupId>com.sun.mail</groupId>
+	<artifactId>jakarta.mail</artifactId>
+	<version>2.0.1</version>
+</dependency>
+
+```
+
+
+### *Configurar Application.properties*
+
+```jsx title=""
+# Configuración básica del servidor de correo
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=${EMAIL_USERNAME} --> email.
+spring.mail.password=${EMAIL_PASSWORD} --> Se obtiene en el paso siguiente.
+
+# Propiedades adicionales para autenticación y cifrado
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.connectiontimeout=5000
+spring.mail.properties.mail.smtp.timeout=5000
+spring.mail.properties.mail.smtp.writetimeout=5000
+spring.mail.properties.mail.smtp.ssl.trust=smtp.gmail.com
+
+```
+
+### *Obtener password*
+
+1. Ingresar a la cuenta de Gmail.
+
+2. Ir a la foto --> "Gestionar  tu cuenta de Google"
+
+3. Ir al apartado de seguridad.
+
+4. Activar la verificación en dos pasos.
+
+5. Crer una "Contraseña de aplicación" [Ver a la barra derecha del paso 4]
+
+6. Se generará la password para configurar en el application properties. 
+
+
+### *Obtener certificado de seguridad*
+
+1. Ingresar a la cuenta de Gmail.
+
+2. En barra de navegación ir al candado y exportar el certificado.
+
+![ssl-1](/img/ssl-1.png)
+
+![ssl-2](/img/ssl-2.png)
+
+![ssl-3](/img/ssl-3.png)
+
+![ssl-4](/img/ssl-4.png)
+
+3. Incorporarlo desde la interfaz gráfica de Intellij
+
+![ssl-5](/img/ssl-5.png)
+
+![ssl-6](/img/ssl-6.png)
+
+
+### *Modificar entity UserSec*
+
+```jsx title="UserSec"
+@Column(length = 500) // Ajustar este valor según sea necesario
+private String resetPasswordToken;
+
+```
+
+
+### *Crear Interfaces y servicio*
+
+```jsx title="IEmailService"
+public interface IEmailService {
+    void sendEmail(String to, String subject, String body);
+}
+
+```
+
+```jsx title="EmailService"
+@Service
+public class EmailService implements IEmailService {
+
+    @Autowired
+    private JavaMailSender  mailSender;
+
+    public void sendEmail(String to, String subject, String body) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(body);
+        mailSender.send(message);
+    }
+}
+
+```
+
+### *Incorporar métodos dentro de UserService*
+
+```jsx title="UserService"
+  public boolean validatePasswordResetToken(String token) {
+        try {
+            DecodedJWT decodedJWT = jwtUtils.validateToken(token);
+            String username = jwtUtils.extractUsername(decodedJWT);
+            UserSec usuario = userRepository.findByResetPasswordToken(token);
+            return usuario != null && usuario.getUsername().equals(username);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public void updatePassword(String token, String newPassword) {
+        UserSec usuario = userRepository.findByResetPasswordToken(token);
+        String passwordEncrypted = encriptPassword(newPassword);
+        if (usuario != null) {
+            usuario.setPassword(passwordEncrypted);
+            usuario.setResetPasswordToken(null);
+            userRepository.save(usuario);
+        }
+    }
+
+```
+
+### *Agregar endpoints en controller*
+
+```jsx title="AuthenticationController"
+@PostMapping("/request-reset-password")
+public ResponseEntity<String> requestResetPassword(@RequestParam String email) {
+    userService.createPasswordResetTokenForUser(email);
+    return ResponseEntity.ok("Solicitud de restablecimiento de contraseña procesada. Por favor, revisa tu correo electrónico.");
+}
+
+@PostMapping("/reset-password")
+public ResponseEntity<String> resetPassword(@RequestParam String token, @RequestParam String newPassword) {
+    boolean isTokenValid = userService.validatePasswordResetToken(token);
+    if (!isTokenValid) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token de restablecimiento de contraseña no válido o expirado.");
+    }
+    userService.updatePassword(token, newPassword);
+    return ResponseEntity.ok("Contraseña restablecida exitosamente.");
+}
+```
+
+
