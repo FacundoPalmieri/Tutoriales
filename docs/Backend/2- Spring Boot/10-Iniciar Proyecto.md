@@ -3,6 +3,8 @@ sidebar_position: 10
 ---
 
 # 10 - Inicio de Proyecto
+
+
 ![inicio proyecto](/img/InicioProyecto.png)
 
 ## Dependencias
@@ -10,10 +12,16 @@ sidebar_position: 10
 
 
 ```jsx title="Annotation - validaciones a usarse en DTO"
-<dependency>
-    <groupId>org.springframework.boot</groupId>
-     <artifactId>spring-boot-starter-validation</artifactId>
-</dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
 
 ```
 

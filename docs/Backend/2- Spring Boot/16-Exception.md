@@ -4,9 +4,7 @@ sidebar_position: 16
 
 # 16 - Exception y Validation
 
-## **Exception**
 
-El manejo de excepciones es una parte crucial de cualquier aplicación, ya que permite gestionar errores de manera eficiente y proporcionar feedback claro al usuario. En el contexto de una aplicación Spring Boot, es recomendable implementar un enfoque centralizado para manejar excepciones.
 
 
 ## **Logs**
@@ -51,6 +49,23 @@ logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} - %msg%n
 
 
 <br/><br/>
+
+## **Exception**
+
+El manejo de excepciones es una parte crucial de cualquier aplicación, ya que permite gestionar errores de manera eficiente y proporcionar feedback claro al usuario. En el contexto de una aplicación Spring Boot, es recomendable implementar un enfoque centralizado para manejar excepciones.
+
+```jsx title="Dependencias"
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+```
 
 
 ## Tipos de exception

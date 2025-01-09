@@ -4,6 +4,11 @@ sidebar_position: 20
 
 # 20 - Extras
 
+
+## **Elección de Nombres para todos los campos**
+
+![nombres-proyecto](/img/nombres-proyecto-spring.png)
+
 ## **Streams y Lambdas**
 
 ### *Sintaxis de .map()*

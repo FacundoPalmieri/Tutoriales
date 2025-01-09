@@ -12,10 +12,10 @@ sidebar_position: 5
 
 Descargar desde la siguiente URL: https://nodejs.org/es
 
-Luego desde la terminal usar el siguiente comando para verificar la versión desde el CMD y PowerShell
+Luego desde la terminal usar el siguiente comando para verificar la versión desde el CMD del sistema.
 
 ```jsx title=""
-node -v
+node --version
 ```
 
 En caso de tener un algún error, verificar:
@@ -29,12 +29,19 @@ En caso de tener un algún error, verificar:
 
 1. Abrir el proyecto en visual studio code
 
-2.  Desde la terminal de visual studio code, en PowerShell, ejectuar el comando --> npm install -g sass
+2. Crear una carpeta scss con un archivo estilos.scss en su interior.
+  - Luego se generará automática una réplica de este archivo en formato css.
 
-3. Crear un archivo style.scss
+![scss-1](/img/scss-1.png)
 
-4. En la consola ejecutar el comando -->  sass --watch style.scss style.css
-    -   Primer archivo origen, segundo archivo destino.
+
+3. Desde la terminal de visual studio code, **en PowerShell**, ejectuar el comando --> **npm init**
+
+4. Presionamos varias veces ENTER, hasta que termine de instalar y aparezca nuevamente la ruta para ingresar un nuevo comando.
+
+5.  En la consola ejecutar el comando -->  **sass --watch scss:css**
+  -   Primer archivo origen, segundo archivo destino.
+  -   Vinculamos el archivo original *scss* con el la réplica *css*.
 
 Esto permitirá traducir de manera automática al archivo css lo que se escriba en el scss.
 
@@ -45,19 +52,8 @@ Esto permitirá traducir de manera automática al archivo css lo que se escriba 
 
 SASS (Syntactically Awesome Style Sheets) es una extensión de CSS que añade características avanzadas y potentes a las hojas de estilo, permitiendo a los desarrolladores escribir código CSS de una manera más eficiente y mantenible. 
 
+Siempre trabajaremos sobre el archivo **scss**, que luego será transcripto automáticamente al archivo **css** para que pueda ser interpretado por el navegador.
 
-### *Declaración de variables*
-
-Se declaran con el símbolo $ y se utilizan directamente con el nombre de la variable.
-
-```jsx title="Ejemplo"
-$primary-color: #3498db;
-
-body {
-  color: $primary-color;
-}
-
-```
 
 ### *Sintaxis SASS*
 
@@ -124,33 +120,130 @@ header
 
 <br/><br/>
 
-### *@mixin*
+### *Declaración de variables y listas*
 
-En SASS, un mixin es un bloque de código que se puede definir una vez y reutilizar en múltiples lugares. Los mixins permiten incluir grupos de declaraciones CSS en otros selectores, y pueden aceptar argumentos para que sean más flexibles. Esto ayuda a evitar la repetición de código y hace que el CSS sea más modular y fácil de mantener.
+Se declaran con el símbolo $ y se utilizan directamente con el nombre de la variable.
 
-:::tip
-**Podemos relacionar el mixin con el concepto de Función**
-:::
+```jsx title="_operaciones.scss"
+$primary-color: #3498db;
 
-En este ejemplo se declara primero una función que se va a encargar de dar un borde al radio de un elemento. Recibirá por parámetro el valor y luego lo asignará a la propiedad.
-
-
-```jsx title="Declaración"
-
-@mixin border-radius($radius){
-    border-radius: $radius;
-}
 ```
 
 
-Desde aquí, se llama a la función y se pasa el valor. 
-
-```jsx title="Llamado"
-
-.box{
-    @include border-radius(10px)
+```jsx title="destino"
+body {
+  color: $primary-color;
 }
+
 ```
+
+
+
+- También pueden realizarse listas. Las mismas comienzan desde el indice 1.
+
+```jsx title="_operaciones.scss"
+$colores: red, green, blue;
+
+```
+
+
+```jsx title="destino"
+body {
+   color:nth($colores, 2) // Se llama al green.
+}
+
+```
+
+
+<br/><br/>
+
+### *Mapas*
+
+Los mapas son estructuras de datos que permiten almacenar pares **clave-valor**. Son similares a los objetos en JavaScript o los diccionarios en otros lenguajes de programación. Los mapas son útiles para organizar y acceder a datos estructurados de manera eficiente
+
+
+Un mapa en SASS se declara utilizando paréntesis () y contiene pares de claves y valores separados por dos puntos :
+
+Los mapas pueden ser utilizados para almacenar variables relacionadas, configuraciones de temas, conjuntos de colores, etc.
+
+#### Sintaxis Básica
+
+```jsx title="scss"
+$map: (clave1: valor1, clave2: valor2, clave3: valor3);
+
+```
+
+
+```jsx title="scss"
+$map --> El nombre de la variable que almacena el mapa.
+
+clave1, clave2, clave3 --> Las claves del mapa.
+
+valor1, valor2, valor3 --> Los valores asociados a las claves.
+
+```
+
+
+#### Ejemplo
+
+#### Declaración de un Mapa de Colores
+
+```jsx title="scss"
+$colors: (
+  primary: #3498db,
+  secondary: #2ecc71,
+  error: #e74c3c,
+  success: #2ecc71
+);
+
+```
+
+#### Acceso a Valores del Mapa
+
+Se puede acceder a los valores de un mapa utilizando la función **map-get**.
+
+```jsx title="scss"
+body {
+  background-color: map-get($colors, primary);
+  color: map-get($colors, success);
+}
+
+map-get($colors, primary): Devuelve el valor asociado a la clave primary en el mapa $colors.
+
+```
+
+
+### *Uso de Mapas en Bucles*
+
+```jsx title="scss"
+//Mapa
+$colors: (
+  primary: #3498db, (clave:valor)
+
+  // primary = clave "name"
+  // #3498db = valor "color"
+
+);
+
+
+
+@each $name, $color in $colors {
+  .text-#{$name} {
+    color: $color;
+  }
+}
+
+```
+
+
+```jsx title=""
+@each $name, $color in $colors: Itera sobre cada par clave-valor en el mapa $colors.
+
+.text-#{$name}: Crea una clase basada en el nombre de la clave.
+
+color: $color: Aplica el color correspondiente a cada clase.
+```
+
 
 <br/><br/>
 
@@ -182,7 +275,7 @@ Uso de @extend para Reutilizar Estilos
 
 ```jsx title="scss"
 .success {
-  @extend .message;
+  @extend .message; // Hereda todas las propiedades de .message
   border-color: green;
 }
 
@@ -220,6 +313,38 @@ El código SASS anterior se compilará en CSS de la siguiente manera:
 }
 
 ```
+
+
+
+### *@mixin*
+
+En SASS, un mixin es un bloque de código que se puede definir una vez y reutilizar en múltiples lugares. Los mixins permiten incluir grupos de declaraciones CSS en otros selectores, y pueden aceptar argumentos para que sean más flexibles. Esto ayuda a evitar la repetición de código y hace que el CSS sea más modular y fácil de mantener.
+
+:::tip
+**Podemos relacionar el mixin con el concepto de Función**
+:::
+
+En este ejemplo se declara primero una función que se va a encargar de dar un borde al radio de un elemento. Recibirá por parámetro el valor y luego lo asignará a la propiedad.
+
+
+```jsx title="Declaración"
+
+@mixin border-radius($radius){
+    border-radius: $radius;
+}
+```
+
+
+Desde aquí, se llama a la función y se pasa el valor. 
+
+```jsx title="Llamado"
+
+.box{
+    @include border-radius(10px)
+}
+```
+
+
 
 #### *Cuándo Usar @extend y Cuándo Usar @mixin*
 
@@ -557,126 +682,63 @@ $screen-size: large; // Cambiar esta variable a "small" para ver el efecto
 ```
 
 
-<br/><br/>
 
-### *Mapas*
-
-Los mapas son estructuras de datos que permiten almacenar pares **clave-valor**. Son similares a los objetos en JavaScript o los diccionarios en otros lenguajes de programación. Los mapas son útiles para organizar y acceder a datos estructurados de manera eficiente
-
-
-Un mapa en SASS se declara utilizando paréntesis () y contiene pares de claves y valores separados por dos puntos :
-
-Los mapas pueden ser utilizados para almacenar variables relacionadas, configuraciones de temas, conjuntos de colores, etc.
-
-#### Sintaxis Básica
-
-```jsx title="scss"
-$map: (clave1: valor1, clave2: valor2, clave3: valor3);
-
-```
-
-
-```jsx title="scss"
-$map --> El nombre de la variable que almacena el mapa.
-
-clave1, clave2, clave3 --> Las claves del mapa.
-
-valor1, valor2, valor3 --> Los valores asociados a las claves.
-
-```
-
-
-#### Ejemplo
-
-#### Declaración de un Mapa de Colores
-
-```jsx title="scss"
-$colors: (
-  primary: #3498db,
-  secondary: #2ecc71,
-  error: #e74c3c,
-  success: #2ecc71
-);
-
-```
-
-#### Acceso a Valores del Mapa
-
-Se puede acceder a los valores de un mapa utilizando la función **map-get**.
-
-```jsx title="scss"
-body {
-  background-color: map-get($colors, primary);
-  color: map-get($colors, success);
-}
-
-map-get($colors, primary): Devuelve el valor asociado a la clave primary en el mapa $colors.
-
-```
-
-
-### *Uso de Mapas en Bucles*
-
-```jsx title="scss"
-//Mapa
-$colors: (
-  primary: #3498db, (clave:valor)
-
-  // primary = clave "name"
-  // #3498db = valor "color"
-
-);
-
-
-
-@each $name, $color in $colors {
-  .text-#{$name} {
-    color: $color;
-  }
-}
-
-```
-
-
-```jsx title=""
-@each $name, $color in $colors: Itera sobre cada par clave-valor en el mapa $colors.
-
-.text-#{$name}: Crea una clase basada en el nombre de la clave.
-
-color: $color: Aplica el color correspondiente a cada clase.
-```
 
 ----------------
 ## **Organización de archivos**
 
 Siguiendo las buenas prácticas, lo más habitual es tener un archivo principal **style.scss** que contenga tus estilos en SASS, y luego compilar este archivo en un **archivo style.css** que el navegador puede interpretar. 
 
-#### ¿Por qué usar style.scss y style.css?
+### ¿Por qué usar style.scss y style.css?
 
-**1.    Organización y Mantenimiento:**
-
--   SASS permite dividir los estilos en múltiples archivos parciales (partials) y luego importarlos en un archivo principal. Esto hace que el código sea más modular y fácil de mantener.
-
-Por ejemplo, se podría tener archivos como:
--   _variables.scss
--   _mixins.scss
--   _base.scss
--   _section.scss
-
-Luego importarlos todos en style.scss.
-
-**2.    Compatibilidad:**
+#### Compatibilidad.
 
 -   Los navegadores no entienden SASS directamente, por lo que necesitas compilar tus archivos SASS (.scss o .sass) en CSS (.css) antes de usarlos en tu sitio web.
 
 -   Esto se hace utilizando un compilador de SASS que convierte el archivo style.scss en style.css.
 
 
+#### Organización y mantenimiento.
+
+-   SASS permite dividir los estilos en múltiples archivos parciales (partials) y luego importarlos en un archivo principal. Esto hace que el código sea más modular y fácil de mantener.
+
+1. Dentro de la carpeta **scss**, generaremos dos nuevas carpetas.
+  - bases.
+  - components.
+
+![scss-2](/img/scss-2.png)
+
+
+2. Dentro de la carpeta **bases** crearemos los siguientes archivos:
+
+- _generales.scss
+- _operaciones.scss
+- _queries.scss.
+
+![scss-3](/img/scss-3.png)
+
+* Se coloca el guión bajo para identificar que son archivos parciales.
+
+**generales** : Irá todo lo común al proyecto.
+  - reset
+  - Fuentes
+
+**operaciones** :  Todo lo relacionado a ciclos, condicionales, etc.
+
+**queries**: Las medias queries para adaptación mobile.
+
+3. Dentro de la carpeta **components** crearemos los siguientes archivos:
+
+- _header.scss (Si usamos boostrap no hace falta crearlo)
+- _main.scss
+- _footer.scss
+
+
 ### *Vinculación de archivo parciales a style.scss*
 
-A través de:  @import + 'nombreArchivo' + ;  
+A través de:  @import + "./nombreArchivo.scss" + ;  
 
-(El nombre del archivo va sin guiones bajos y extensiones)
+(El nombre del archivo va sin guiones bajos)
 
 ```jsx title="_variables.scss"
 $primary-color: #3498db;
@@ -685,9 +747,6 @@ $primary-color: #3498db;
 
 ```jsx title="style.scss"
 
-@import 'variables';
+@import "./variables.scss";
 
 ```
-
-Finalmente nuestro archivo style.scss se vinculará al style.css ejecutando el comando ** sass --watch style.scss style.css**
-
