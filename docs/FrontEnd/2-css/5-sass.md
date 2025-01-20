@@ -263,7 +263,7 @@ Supongamos que tenemos un conjunto de estilos para un mensaje básico y queremos
 
 
 ```jsx title="scss"
-.message {
+%message {
   border: 1px solid #ccc;
   padding: 10px;
   color: #333;
@@ -734,19 +734,50 @@ Siguiendo las buenas prácticas, lo más habitual es tener un archivo principal 
 - _footer.scss
 
 
-### *Vinculación de archivo parciales a style.scss*
+### *Vinculación de archivo*
 
-A través de:  @import + "./nombreArchivo.scss" + ;  
+A través de:  @import + "./nombreArchivo.scss" + Alias +  ;  
 
 (El nombre del archivo va sin guiones bajos)
 
-```jsx title="_variables.scss"
-$primary-color: #3498db;
+Ejemplo
 
+1. Definimos una variables
+
+```jsx title="_operaciones.scss"
+$navbar-fondo:  #2c2c2c;
 ```
 
-```jsx title="style.scss"
+2. Utilizamos la variable
 
-@import "./variables.scss";
+```jsx title="_header.scss"
 
+@use '../bases/operaciones' as op; //Importamos el archivo colocando un alias
+
+header {
+    .menu {
+        display: block;
+        width: 100%;
+        height: 90px;
+        position: fixed;
+        background-color: op.$navbar-fondo;
+
+        div {
+            a {
+                img {
+                    width: 70px;
+                    height: 70px;
+                    border-radius: 20px;
+                    object-fit: cover;
+                }
+            }
+        }
+    }
+}
+```
+
+3. Importamos todo desde nuestro archivo principal scss
+
+```jsx title="estilos.scss"
+@use "./bases/operaciones.scss" as op;
 ```
