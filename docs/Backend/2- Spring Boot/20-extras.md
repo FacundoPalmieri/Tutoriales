@@ -7,7 +7,82 @@ sidebar_position: 20
 
 ## **Elección de Nombres para todos los campos**
 
-![nombres-proyecto](/img/nombres-proyecto-spring.png)
+### groupId  (Identificador del grupo - POM.xml)
+
+Este es generalmente el nombre del dominio de la empresa o de la organización invertido.
+ 
+Si la empresa tiene dominio web odontologiaintegralfm.com, corresponde que vaya com.odontologiaintegralfm
+
+```jsx title="Ejemplo"
+<groupId>com.com.odontologiaintegralfm</groupId>
+
+```
+
+
+### artifactId (Identificador del artefacto - POM.xml)
+Este es el nombre del proyecto y generalmente está en minúsculas y separado por guiones (-).
+Si el proyecto es solo un componente (como una aplicación web que se comunica con un backend, por ejemplo), aplicacion-web es un buen nombre. Es claro y directo.
+
+```jsx title="Ejemplo"
+<artifactId>aplicacion-web</artifactId>
+```
+
+### name (Nombre del proyecto - POM.xml)
+Este es el nombre completo del proyecto, utilizado en interfaces de usuario o documentación.
+El nombre debe ser más descriptivo y completo que el artifactId. Puede incluir espacios o mayúsculas.
+
+```jsx title="Ejemplo"
+<name>Aplicación de Gestión Web</name>
+<description>Aplicación web de gestión interna</description>
+```
+
+
+### modulename (Nombre del Módulo - Carpeta principal del proyecto)
+Si tu proyecto tiene varios módulos (por ejemplo, un proyecto multi-módulo), el nombre del módulo generalmente debe seguir el mismo patrón que el artifactId, pero puede estar más enfocado en su funcionalidad específica.
+
+**Si el proyecto es monolítico, este nombre podría coincidir con el artifactId.**
+
+![module-name](/img/module-name.png)
+
+
+### spring.application.name (Nombre para spring - application.properties)
+Este valor es utilizado por Spring Boot para identificar la aplicación y puede ser útil en varias situaciones, como cuando tienes un sistema de microservicios o cuando se integran varios componentes, ya que se utiliza para dar un nombre a la aplicación en logs, métricas, y otras configuraciones.
+
+```jsx title="Ejemplo"
+spring.application.name=Aplicación de Gestión Web
+```
+
+
+### Refactor de Main
+
+Nombre de la empresa, seguido de "application"
+
+```jsx title="Ejemplo"
+@SpringBootApplication
+public class OdontologiaIntegralFMApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(OdontologiaIntegralFMApplication.class, args);
+	}
+}
+```
+
+## Al realizar nuevos desarrollos
+
+### Endpoint
+1. Que tipo de método? get, post?
+2. Que tipo de autorización requiere
+3. Que dato necesito recibir
+4. Que validaciones de entrada debe tener?
+5. Que tipo de respuesta necesito dar?
+6. Realizar la documentación.
+
+### Service
+
+1.  Anotaciones de @Transactional para escritura en bd
+2.  Utilizar try catch para BD
+3.  Pensar bien todas las Validaciones e intentar realizar método reutilizables.
+
 
 ## **Streams y Lambdas**
 

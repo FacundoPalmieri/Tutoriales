@@ -218,3 +218,46 @@ Características de los Streams:
 **Operaciones perezosas:** Las operaciones en los streams son perezosas, lo que significa que no se ejecutan hasta que se necesita el resultado final. Esto optimiza el rendimiento y la eficiencia del procesamiento.
 
 **Soporte para procesamiento paralelo:** Los streams pueden ser paralelizados fácilmente, permitiendo el procesamiento de datos en múltiples hilos.
+
+
+## Lambdas Vs Clases Anónimas.
+
+1. Primero deberemos trabajar SIEMPRE con una interfaz funcional.
+
+```jsx title="Interfaz Funcional"
+@FunctionalInterface
+public interface Operador {
+    int operar (int num1, int num2);
+}
+```
+
+<br/>
+
+2. Implementeamos la interfaz con una función Anónima.
+
+```jsx title="Ejemplo"
+// Creamos una instancia de una clase anónima que implementa la interfaz Operador
+Operador suma = new Operador () {
+
+    //Sobreescribimos el método "Operar"
+    @Override
+    public int operar (int num1, int num2) {
+        return num1 + num2;
+    }
+};
+
+System.out.println("suma anónima: " + suma.operar(3,5));
+// Imprime 8
+
+```
+<br/>
+
+2. Implementeamos la interfaz con lambda
+
+```jsx title="Ejemplo"
+// Implementamos la interfaz utilizando una expresión lambda
+Operador suma = (num1, num2) -> num1 + num2;
+
+System.out.println("suma anónima: " + suma.operar(3,5));
+// Imprime 8
+```

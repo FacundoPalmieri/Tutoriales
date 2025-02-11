@@ -98,6 +98,10 @@ Una rama en Git es una copia de la línea de tiempo del proyecto en un punto esp
 
 **Mejor control de versiones:** Cada rama mantiene su propio historial de cambios, lo que facilita la gestión de versiones.
 
+### *Cambiar nombre a una rama*
+
+git branch -m nuevo-nombre
+
 ### *Crear ramas*
 
 Con el comando **git branch nombre-de-la-rama** podremos crear una nueva rama. Luego podremos verificar si la misma fue creada con **git branch -l**
@@ -177,6 +181,13 @@ git push origin main
 
 3. git config user.email 
 
+
+
+### *Eliminar un commit REMOTO pero mantener la versión LOCAL*
+
+1.  git reset --soft HEAD~1
+
+2.  git push origin main --force
 
 ### *Otros*
 
