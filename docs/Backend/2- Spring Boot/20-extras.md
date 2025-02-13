@@ -14,7 +14,7 @@ Este es generalmente el nombre del dominio de la empresa o de la organización i
 Si la empresa tiene dominio web odontologiaintegralfm.com, corresponde que vaya com.odontologiaintegralfm
 
 ```jsx title="Ejemplo"
-<groupId>com.com.odontologiaintegralfm</groupId>
+<groupId>com.odontologiaintegralfm</groupId>
 
 ```
 
@@ -24,7 +24,7 @@ Este es el nombre del proyecto y generalmente está en minúsculas y separado po
 Si el proyecto es solo un componente (como una aplicación web que se comunica con un backend, por ejemplo), aplicacion-web es un buen nombre. Es claro y directo.
 
 ```jsx title="Ejemplo"
-<artifactId>aplicacion-web</artifactId>
+<artifactId>api</artifactId>
 ```
 
 ### name (Nombre del proyecto - POM.xml)
@@ -32,8 +32,8 @@ Este es el nombre completo del proyecto, utilizado en interfaces de usuario o do
 El nombre debe ser más descriptivo y completo que el artifactId. Puede incluir espacios o mayúsculas.
 
 ```jsx title="Ejemplo"
-<name>Aplicación de Gestión Web</name>
-<description>Aplicación web de gestión interna</description>
+<name>odontologia-integral-fm-api</name>
+<description>API REST para la aplicación web de Odontología Integral FM</description>
 ```
 
 
@@ -49,9 +49,15 @@ Si tu proyecto tiene varios módulos (por ejemplo, un proyecto multi-módulo), e
 Este valor es utilizado por Spring Boot para identificar la aplicación y puede ser útil en varias situaciones, como cuando tienes un sistema de microservicios o cuando se integran varios componentes, ya que se utiliza para dar un nombre a la aplicación en logs, métricas, y otras configuraciones.
 
 ```jsx title="Ejemplo"
-spring.application.name=Aplicación de Gestión Web
+spring.application.name= odontologiaintegralfm-api
 ```
 
+
+### Renombra Package de proyecto (Estructura carpetas)
+
+Debe contener el mismo nombre que el groupId
+
+![package-rename](/img/package-rename.png)
 
 ### Refactor de Main
 
@@ -59,7 +65,7 @@ Nombre de la empresa, seguido de "application"
 
 ```jsx title="Ejemplo"
 @SpringBootApplication
-public class OdontologiaIntegralFMApplication {
+public class OdontologiaIntegralFmApiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(OdontologiaIntegralFMApplication.class, args);
