@@ -467,4 +467,35 @@ return cursos;
 4. **existsById(ID id)**: Devuelve un booleano (true o false), no un Optional.
 
 
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+## CORS  (Cross-Origin Resource Sharing)
+
+Es un mecanismo de seguridad implementado por los navegadores para restringir solicitudes HTTP entre diferentes orígenes (diferente dominio, puerto o protocolo).
+
+Por defecto, los navegadores bloquean las solicitudes hechas desde un origen distinto al del servidor que responde. Esto impide que, por ejemplo, una aplicación web alojada en http://frontend.com haga peticiones a http://api.backend.com sin la autorización explícita del backend.
+
+### ¿Cómo funciona CORS?
+
+Cuando el frontend intenta hacer una petición a otro dominio (cross-origin request), el navegador envía una solicitud preflight (OPTIONS) al servidor para preguntar si permite la comunicación.
+
+El backend debe responder con los encabezados adecuados para permitir la solicitud, como:
+
+**Access-Control-Allow-Origin: http://frontend.com** → Permite solicitudes desde ese origen.
+
+**Access-Control-Allow-Methods: GET, POST, PUT, DELETE** → Define qué métodos están permitidos.
+
+**Access-Control-Allow-Headers: Content-Type, Authorization** → Indica qué encabezados personalizados pueden enviarse.
+
+Si el backend no responde con estos encabezados, el navegador bloquea la solicitud y lanza un error de CORS en la consola.
+
+### ¿Cómo solucionar errores de CORS?
+
+Configurando CORS en el backend:
+
+En Spring Boot, puedes usar @CrossOrigin en los controladores o configurar un filtro global.
+En Express (Node.js), puedes usar el paquete cors.
+Proxy en desarrollo: Configurar un proxy en el frontend para evitar el problema (Ej: en Angular con proxy.conf.json).
+
+CORS en APIs públicas: Algunas APIs permiten CORS agregando * en Access-Control-Allow-Origin, pero esto es inseguro.
 

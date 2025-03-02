@@ -19,6 +19,10 @@ Una **clase anónima** es una clase que se define y se usa al mismo tiempo sin d
 
 Se utiliza cuando necesitamos una clase que solo se va a usar una vez, como para sobrescribir métodos de una clase o interfaz, sin tener que crear una clase completa.
 
+:::tip
+Una clase anónima es una instancia de una interfaz.
+:::
+
 Ejemplo 1 = Sobreescritura del método abstracto de la interfaz
 
 ```jsx title="Interfaz Animal"
@@ -83,11 +87,9 @@ public  class Main{
 ## ¿Qué son las Funciones Lambda?
 Las expresiones lambda son una forma de definir funciones anónimas (sin nombre) que pueden ser pasadas como argumentos a métodos o utilizadas para implementar interfaces funcionales (interfaces que contienen un solo método abstracto). Una expresión lambda se compone de:
 
-Podemos resumirlo como: 
+-   Es una forma corta de escribir funciones que se puede pasar como parámetros a o usar dentro de colecciones.
 
--   Es una forma corta de escribir funciones que se puede como parámetros a o usar dentro de colecciones.
-
--   Es una menra de representar una función o procedimiento sin tener que escribir toda la estructura de un método.
+-   Es una manera de representar una función o procedimiento sin tener que escribir toda la estructura de un método.
 
 
 ### Sintaxis
@@ -213,6 +215,7 @@ public  class Main{
 Los streams son una nueva abstracción introducida en Java 8 que permite procesar colecciones de datos de manera funcional. Proporcionan una forma de realizar operaciones sobre una secuencia de elementos, como filtrar, mapear, y reducir, de manera fluida y expresiva.
 
 Características de los Streams:
+
 **No almacenan datos:** Un stream es una secuencia de datos en la que se pueden aplicar operaciones, pero no almacena los datos en sí.
 
 **Operaciones perezosas:** Las operaciones en los streams son perezosas, lo que significa que no se ejecutan hasta que se necesita el resultado final. Esto optimiza el rendimiento y la eficiencia del procesamiento.

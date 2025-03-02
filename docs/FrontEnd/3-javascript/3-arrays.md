@@ -73,6 +73,7 @@ for (let i = 0; i < numeros.length; i++) {
 Los arrays son estructuras de datos fundamentales en JavaScript, utilizadas para almacenar colecciones de elementos. A continuación, exploramos cuatro métodos esenciales para manipular arrays: 
 - push.
 - pop.
+- splice
 - shift.
 - unshift.
 
@@ -102,6 +103,23 @@ console.log(frutaEliminada);  // Salida: 'naranja'
 console.log(frutas);  // Salida: ['manzana', 'banana']
 
 ```
+<br/>
+
+#### Método splice.
+
+Si conoces el índice del elemento que deseas eliminar, splice() es la mejor opción:
+
+```jsx title="sintaxis"
+numeros.splice(indice, cantidad de elementos a eliminar desde el indice);
+```
+
+```jsx title="Ejemplo"
+let numeros = [1, 2, 3, 4, 5];
+numeros.splice(2, 1); // Elimina el elemento en el índice 2 (el número 3)
+console.log(numeros); // [1, 2, 4, 5]
+
+```
+
 <br/>
 
 #### Método shift.
