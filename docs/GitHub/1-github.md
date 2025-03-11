@@ -298,6 +298,13 @@ git branch -a
 
 ## **Comandos**
 
+### *Descartar cambios locales*
+
+```jsx title="Ejemplo"
+git reset --hard
+
+```
+
 ### *Comandos para chequear información*
 
 1. git config --list 

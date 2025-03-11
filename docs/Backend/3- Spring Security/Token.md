@@ -93,3 +93,41 @@ Si bien JWT tiene su complejidad a la hora de implementarlo, su funcionamiento g
 
 4. Una vez que se ha confirmado la autenticidad del token y se ha identificado al usuario, se activa el mecanismo de control de acceso. Esto determina si el usuario tiene permisos para acceder a los recursos solicitados y, en caso afirmativo, se envía la respuesta con el recurso protegido correspondiente.
 :::
+
+
+## Refresh Token
+
+El refresh token es un tipo de token utilizado en sistemas de autenticación basados en JWT (JSON Web Token) y OAuth2 para permitir a los usuarios obtener un nuevo access token sin necesidad de volver a autenticarse con sus credenciales.
+
+Generlamente suelen incluir:
+
+-   Un identificador único para asociarlo con una sesión o usuario en la base de datos.
+
+-   Metadatos como la fecha de creación y la fecha de expiración.
+
+-   Un mecanismo para verificar su validez, como una firma criptográfica.
+
+-   Opcionalmente, un ID del usuario (aunque generalmente solo se guarda en el servidor).
+
+A diferencia del access token, el refresh token no contiene los roles ni permisos del usuario, porque su única función es obtener un nuevo access token cuando este expira.
+
+![refresh-token](/img/refresh-token.png)
+
+
+### Funcionamiento:
+Cuando un usuario inicia sesión, el sistema le devuelve dos tokens:
+
+- Un access token (token de acceso), que tiene una duración corta (por ejemplo, 15 minutos).
+- Un refresh token, que tiene una duración más larga (horas, días o incluso semanas).
+
+Cuando el access token expira, el usuario no necesita volver a iniciar sesión. En su lugar:
+
+-   Envía el refresh token al servidor de autenticación.
+
+-   El servidor valida el refresh token.
+
+-   Si es válido, el servidor devuelve un nuevo access token.
+
+-   Al vencer nuevamente el access token, vuelve a enviar el refresh renovando el mismo.
+
+-   Cuando el refresh token es inválido (por ejemplo, porque fue revocado o no tuvo actividad en la app), el usuario debe volver a autenticarse.

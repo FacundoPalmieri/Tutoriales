@@ -1,8 +1,8 @@
 ---
-sidebar_position: 20
+sidebar_position: 1
 ---
 
-# 20 - Extras
+# 1 - Extras
 
 
 ## **Elección de Nombres para todos los campos**
@@ -73,7 +73,7 @@ public class OdontologiaIntegralFmApiApplication {
 }
 ```
 
-## Al realizar nuevos desarrollos
+## **Nuevos desarrollos**
 
 ### Endpoint
 1. Que tipo de método? get, post?
@@ -469,7 +469,7 @@ return cursos;
 
 -------------------------------------------------------------------------------------------------------------------------------------------
 
-## CORS  (Cross-Origin Resource Sharing)
+## **CORS  (Cross-Origin Resource Sharing)**
 
 Es un mecanismo de seguridad implementado por los navegadores para restringir solicitudes HTTP entre diferentes orígenes (diferente dominio, puerto o protocolo).
 
@@ -499,3 +499,27 @@ Proxy en desarrollo: Configurar un proxy en el frontend para evitar el problema 
 
 CORS en APIs públicas: Algunas APIs permiten CORS agregando * en Access-Control-Allow-Origin, pero esto es inseguro.
 
+------------------------------------------------------------
+
+## **Certificado SSL (Secure Sockets Layer)**
+
+Un certificado SSL (Secure Sockets Layer) sirve para cifrar la comunicación entre el navegador del usuario y el servidor web, asegurando que los datos enviados y recibidos no puedan ser interceptados ni modificados por terceros.
+
+#### ¿Por qué es importante el SSL?
+
+**Cifrado 🔒:** Protege información sensible como contraseñas, datos personales y tarjetas de crédito.
+
+**Autenticación ✅:** Garantiza que el usuario se está conectando al servidor correcto y no a un sitio fraudulento.
+
+**Confianza 🏆:** Los navegadores muestran un candado en la barra de direcciones cuando un sitio usa SSL, lo que da confianza a los visitantes.
+
+**SEO 📈:** Google favorece en los resultados de búsqueda a los sitios con SSL habilitado (HTTPS).
+
+Hoy en día, el protocolo SSL ha sido reemplazado por TLS (Transport Layer Security), que es una versión más segura, pero aún se le sigue llamando SSL de manera común.
+
+<br/>
+
+
+------------------------------------------------------------
+
+## **Certificado SSL (Secure Sockets Layer)**
