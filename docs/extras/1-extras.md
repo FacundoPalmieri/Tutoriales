@@ -4,6 +4,18 @@ sidebar_position: 1
 
 # 1 - Extras
 
+## **Desactivar copilot en VS Code**
+
+![copilot-vs-1](/img/copilot-vs-1.png)
+
+<br/><br/>
+
+![copilot-vs-2](/img/copilot-vs-2.png)
+
+<br/><br/>
+
+![copilot-vs-3](/img/copilot-vs-3.png)
+
 
 ## **Elección de Nombres para todos los campos**
 

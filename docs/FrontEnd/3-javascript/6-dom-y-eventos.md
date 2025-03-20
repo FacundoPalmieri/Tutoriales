@@ -267,20 +267,20 @@ Los eventos en JavaScript permiten detectar e interactuar con acciones del usuar
 
 La forma más flexible de manejar eventos es usando addEventListener(). Se pasa una función anónima como argumento a addEventListener.
 
-```jsx title="Ejemplo sin captura de evento"
-const boton = document.getElementById("miBoton");
+```jsx title="html"
+ <button id="ButtonMostrarProductos">Ver Productos</button>
 
-boton.addEventListener("click", function() {
-  alert("¡Hiciste clic en el botón!");
-});
 ``` 
 
 <br/>
 
-```jsx title="Ejemplo con captura de evento"
-document.addEventListener("keydown", function(event) {
-  console.log(`Tecla presionada: ${event.key}`);
-});
+```jsx title="javascript"
+// Eventos
+//Asignamos a una variable el botón de HTML
+let listarProductos = document.querySelector("#ButtonMostrarProductos");
+
+//Utilizamos el método del evento desde la variable. Aqui decimos que al hacer click sobre el botón se llame a otra función que se encarga de mostrarProductos
+listarProductos.addEventListener("click", mostrarProductos);
 ``` 
 
 ### Diferentes tipos de eventos
@@ -300,6 +300,54 @@ Algunos eventos comunes son:
 **change**    → Cuando cambia el valor de un input.
 
 **submit**    → Cuando se envía un formulario.
+
+<br/>
+
+###  Ejemplo Completo
+
+1. - HTML con botones de cabecera.
+   - Una section con un ID para mostrar el contenido dinámicamente en JS (NO SE VE DESDE LA WEB SINO TIENE CONTENIDO)
+
+![event-1](/img/event-1.png)
+
+<br/>
+
+![event-1-1](/img/event-1-1.png)
+
+-------------------------------------------------------------
+
+2. Desde el archivo JS hacemos:
+  - Seleccionamos el DOM
+  - Escuchamos el evento "Click" en el botón "EliminarProducto" y llamamos a la función.
+
+![event-2](/img/event-2.png)
+
+:::tip
+la función dentro del evento va SIN parantesis porque no es un llamado, sino una referencia. Si fuera un llamado se ejecutaria de acuerdo se corre el archivo javascript independientemente si escucha el evento o no.
+:::
+
+-------------------------------------------------------------
+
+3. Al ingresar a la función se muestra:
+  - El input y el botón para confirmar eliminación.
+  - Se escucha el evento al hacer "click" en confirmar Eliminación. Eso llamá a la función que realiza la lógica.
+
+![event-3](/img/event-3.png)
+
+<br/>
+
+![event-3](/img/event-3-3.png)
+
+<br/>
+
+-------------------------------------------------------------
+
+4. Dentro de la función de lógica:
+
+  - Se recupera el valor del input.
+  - Se parsea a entero.
+
+![event-4](/img/event-4.png)
 
 <br/>
 

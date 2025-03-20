@@ -66,3 +66,40 @@ public class Curso {
     private long id_curso;
 }
 ```
+
+
+## **Consultas Personalizadas - JPQL (Java Persistence Query Language)**
+
+-   Las entidades de JPA representan las tablas de la base de datos.
+
+-   Los atributos de la entidad representan las columnas de la tabla.
+
+```jsx title=""
+    @Modifying
+    @Query("UPDATE TokenConfig t SET t.expiration = :expiration WHERE t.id = :id")
+    void update(@Param("expiration") Long expiration, @Param("id") Long id);
+
+``` 
+
+**-  @Modifying**: Esta anotación le indica a Spring Data JPA que la consulta que se va a ejecutar es una consulta de modificación (no una consulta de selección). Es decir, la consulta está cambiando datos en la base de datos, como una actualización, inserción o eliminación.
+
+
+**-  @Query**: La anotación @Query permite definir consultas personalizadas en tu repositorio sin tener que escribir un método específico de consulta para cada operación.
+
+
+**-  @UPDATE TokenConfig t**:  Actualizar la entidad TokenConfig, que es la tabla correspondiente en la base de datos.
+
+**-  SET t.expiration = :expiration**:  Establecer el valor del atributo expiration de TokenConfig al valor que se pasa como parámetro expiration. El parámetro se define con :expiration, lo que indica que será un valor dinámico que se pasará a la consulta.
+
+
+**-  void**: Esto significa que el método no devuelve ningún valor.
+
+**-  update**: Este es el nombre del método. 
+
+**-  @Param("expiration")**:  Esta anotación se usa para mapear el parámetro de la consulta (:expiration) con el parámetro del método en el repositorio.
+En este caso, expiration es el valor que se pasará al método update(), y se asignará a la variable :expiration en la consulta.
+
+La anotación @Param("expiration") le indica a Spring que el valor de la variable debe ser insertado en el lugar de :expiration en la consulta
+
+
+**-  Long expiration**: Este es el parámetro del método update. El valor de expiration es el que se pasará cuando se llame a este método y será usado en la consulta para actualizar el valor de la columna expiration en la base de datos. El tipo de Long es porque el valor que estamos pasando es un número que generalmente representa una cantidad de milisegundos, como el tiempo de expiración de un token.
