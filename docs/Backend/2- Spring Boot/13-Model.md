@@ -700,52 +700,78 @@ Configura cómo se generará el valor para la clave primaria (estrategias: AUTO,
 
 ### - *@Column:  Define detalles de la columna*
 
-**columnDefinition**: ermite definir manualmente el tipo de columna en SQL.
+**columnDefinition**: Permite definir manualmente el tipo de columna en SQL.
 
 Ejemplo: columnDefinition = "DATE"
 
+
+```jsx title=""
+@Column(columnDefinition = "DATE")
+
+``` 
 <br/>
 
 
 **name**: Define el nombre de la columna en la tabla.
 
-Ejemplo: name = "start_date"
+```jsx title=""
+@Column(name = "start_date")
+``` 
 
 <br/>
 
 **nullable** : Indica si la columna puede aceptar valores nulos.	
 
-Ejemplo: nullable = false
+```jsx title=""
+@Column(nullable = false)
+
+``` 
 
 <br/>
 
 **unique**: Indica si la columna debe tener valores únicos.	
+```jsx title=""
+@Column(unique = true)
 
-Ejemplo: unique = true
+``` 
+
 
 <br/>
 
 **length:** Especifica la longitud máxima de la columna (solo para tipos String)
+```jsx title=""
+@Column(length = 255)
 
-Ejemplo: length = 255
+``` 
+
 
 <br/>
 
 **precision**: Define la precisión para columnas de tipo decimal (número total de dígitos).
 
-Ejemplo: precision = 10
+```jsx title=""
+@Column(precision = 10)
+
+``` 
+
 
 <br/>
 
 **insertable**: Indica si el valor puede ser insertado (por defecto true).
+```jsx title=""
+@Column(insertable = false)
 
-Ejemplo: insertable = false
+``` 
+ 
 
 <br/>
 
 **updatable**: Indica si el valor puede ser actualizado (por defecto true).
+```jsx title=""
+@Column(updatable = false)
 
-Ejemplo: updatable = false
+``` 
+
 
 <br/><br/>
 
@@ -753,7 +779,12 @@ Ejemplo: updatable = false
 
 **name**: Define el nombre de la columna que actúa como clave foránea
 
-Ejemplo: name = "club_id"
+```jsx title=""
+@JoinColumn(name = "club_id")
+
+
+``` 
+
 
 <br/><br/>
 
@@ -761,19 +792,48 @@ Ejemplo: name = "club_id"
 
 **name**: Nombre de la tabla intermedia.
 
-Ejemplo: name = name = "club_competitions"
+```jsx title=""
+@JoinTable(name = "club_competitions")
+``` 
 
 <br/>
 
 **joinColumns**: Define las columnas que actúan como claves foráneas hacia la entidad actual.
 
-Ejemplo: joinColumns = @JoinColumn(name = "club_id")
+```jsx title=""
+@JoinTable(
+    name = "club_competitions",
+    joinColumns = @JoinColumn(name = "club_id")
+)
+
+// @JoinTable: Configura la tabla intermedia en una relación @ManyToMany.
+
+//joinColumns: Define las columnas que actúan como claves foráneas hacia la entidad actual. En este caso, la columna club_id será la clave foránea en la tabla intermedia que hace referencia a la entidad actual (por ejemplo, Club)
+
+```
 
 <br/>
 
 **inverseJoinColumns**: Define las columnas que actúan como claves foráneas hacia la entidad relacionada.
 
-Ejemplo: inverseJoinColumns = @JoinColumn(name = "competition_id")
+```jsx title=""
+@JoinTable(
+    name = "club_competitions",
+    joinColumns = @JoinColumn(name = "club_id"),
+    inverseJoinColumns = @JoinColumn(name = "competition_id")
+)
+
+/*
+@JoinTable: Configura la tabla intermedia en una relación @ManyToMany.
+
+joinColumns: Define las columnas que actúan como claves foráneas hacia la entidad actual (en este caso, hacia Club).
+
+inverseJoinColumns: Define las columnas que actúan como claves foráneas hacia la entidad relacionada (en este caso, hacia Competition). La columna competition_id es la clave foránea que hace referencia a la entidad Competition en la tabla intermedia.
+
+
+*/
+
+```
 
 
 ##### Ejemplo completo
@@ -795,7 +855,11 @@ public class Club {
 
 
     @ManyToOne(targetEntity = FootballCompetition.Class, fetch = FetchType.LAZY)
-    @JoinTable(name = "club_competitions", JoinColumn = @JoinColumn(name = "club"), inverseJoinColumns = @JoinColumn(name= "competition"))
+    @JoinTable(name = "club_competitions",
+                JoinColumn = @JoinColumn(name = "club"), 
+                inverseJoinColumns = @JoinColumn(name= "competition")
+    )
+
     private List <FootballCompetition>  FootballCompetition
 }
 ```

@@ -84,23 +84,35 @@ public class OdontologiaIntegralFmApiApplication {
 	}
 }
 ```
+-------------------------------------------------------
 
 ## **Nuevos desarrollos**
 
+### Model
+
+1. Colocar @Entity en la clase
+
+
+![extra-model](../../static/img/extra-model.png)
+
 ### Endpoint
-1. Que tipo de método? get, post?
-2. Que tipo de autorización requiere
-3. Que dato necesito recibir
-4. Que validaciones de entrada debe tener?
-5. Que tipo de respuesta necesito dar?
-6. Realizar la documentación.
+1. Colocar @RestController
+2. Colocar ruta de controller
+3. Colocar ruta de endpoint.
+4. Que tipo de método? get, post?
+6. Que tipo de autorización requiere
+6. Que dato necesito recibir
+7. Que validaciones de entrada debe tener?
+8. Que tipo de respuesta necesito dar?
+9. Realizar la documentación.
 
 ### Service
+1.  Colocar @Service en la clase
+2.  Anotaciones de @Transactional para escritura en bd
+3.  Utilizar try catch para BD
+4.  Pensar bien todas las Validaciones e intentar realizar método reutilizables.
 
-1.  Anotaciones de @Transactional para escritura en bd
-2.  Utilizar try catch para BD
-3.  Pensar bien todas las Validaciones e intentar realizar método reutilizables.
-
+------------------------------------------------------------------
 
 ## **Streams y Lambdas**
 
