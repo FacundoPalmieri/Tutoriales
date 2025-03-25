@@ -4,29 +4,36 @@ sidebar_position: 7
 
 # 7 - Preguntas Técnicas.
 
-## Cual es la diferencia entre JDK y JRE?
+## **Java**
+
+### Cual es la diferencia entre JDK y JRE?
 La diferencia principal entre JDK y JRE es:
--   JDK (Java Development Kit): Es un conjunto de herramientas para **desarrollar** aplicaciones Java. Incluye el JRE, el compilador (javac), y otras herramientas como el depurador y el intérprete. Es necesario para programar y compilar código en Java.
--   JRE (Java Runtime Environment): Es el entorno necesario para **ejecutar** aplicaciones Java. Incluye la JVM (Java Virtual Machine) y las bibliotecas esenciales, pero no tiene herramientas de desarrollo como el compilador. Sirve solo para ejecutar programas ya compilados.
+-   JDK (Java Development Kit - Kit de desarrollo): Es un conjunto de herramientas para **desarrollar** aplicaciones Java. Incluye el JRE, el compilador (javac) entre otras herramientas.
+
+-   JRE (Java Runtime Environment - Entorno de ejecución): Es el entorno necesario para **ejecutar** aplicaciones Java. Incluye la JVM (Java Virtual Machine) y las bibliotecas esenciales, pero no tiene herramientas de desarrollo como el compilador. Sirve solo para ejecutar programas ya compilados.
 
 :::tip[Conclusión]
 -   JDK: Para desarrollar y ejecutar aplicaciones Java.
 -   JRE: Solo para ejecutar aplicaciones Java.
 :::
 
-## ¿Por qué Java es una plataforma de lenguaje independiente?
-Java es un lenguaje de plataforma independiente debido a la JVM (Java Virtual Machine). Cuando codificas un programa en Java, el código fuente se compila en bytecode, que es un formato intermedio que no depende de ninguna plataforma específica.
-Este bytecode puede ser ejecutado en cualquier dispositivo o sistema operativo que tenga una JVM instalada. La JVM actúa como un intermediario que traduce el bytecode en instrucciones específicas para el sistema operativo subyacente. Esto permite que un programa Java se ejecute en cualquier plataforma sin necesidad de modificaciones, siguiendo el principio de "write once, run anywhere" (escribir una vez, ejecutar en cualquier lugar).
+---------------------------------------
+
+### ¿Por qué Java es una plataforma de lenguaje independiente?
+Java se considera un lenguaje independiente de la plataforma porque su código no se ejecuta directamente en el sistema operativo, sino a través de la Máquina Virtual de Java (JVM). Esto significa que, mientras la JVM esté instalada, el programa puede ejecutarse en cualquier sistema operativo.
 
 :::tip[Conclusión]
 En resumen, Java es independiente de la plataforma porque el bytecode generado se ejecuta a través de la JVM, que es específica para cada sistema operativo pero interpreta el mismo código.
 :::
 
-## ¿Cuál es la diferencia entre una clase abstracta y una interfaz?
+---------------------------------------
 
--   Clase abstracta: Es una clase que puede tener métodos con código ya implementado y métodos abstractos (sin implementar). No se puede instanciar directamente. Sirve para heredar comportamientos comunes a varias clases.
+### ¿Cuál es la diferencia entre una clase abstracta y una interfaz?
 
--   Interfaz: Define solo métodos sin implementar (a menos que se use default o static en Java). Las clases que implementan una interfaz deben proporcionar el código de esos métodos. Una clase puede implementar varias interfaces, pero solo heredar de una clase abstracta.
+- Clase abstracta: Es una clase que puede tener métodos tanto con implementación como sin implementación. No se puede crear una instancia directamente, y se usa para compartir comportamientos comunes entre varias clases.
+
+- Interfaz: Solo define métodos sin implementación (salvo los que sean default o static). Las clases que implementan una interfaz deben proporcionar el código de esos métodos. Una clase puede implementar varias interfaces, pero solo puede heredar de una clase abstracta.
+
 :::tip[Conclusión]
 -   Clase abstracta: Puede tener código y se hereda.
 -   Interfaz: Solo define métodos (normalmente) y se implementa.
@@ -98,19 +105,60 @@ class Pajaro implements Volador(
 
 :::
 
+---------------------------------------
+
+### Inmutabilidad en Java
+
+Un objeto inmutable no puede cambiar su estado después de ser creado (ej. String).
+
+```jsx title=""
+String saludo = "hola";
+saludo = "chau";
+``` 
+El valor de la variable saludo cambia, pero no el objeto String original. Lo que sucede es lo siguiente:
+
+**Inicialización de saludo con "hola":** El objeto String con el valor "hola" se crea en memoria y saludo apunta a ese objeto.
+
+**Asignación de saludo a "chau":** El valor de la variable saludo se cambia para apuntar a un **nuevo objeto String con el valor "chau"**. El objeto "hola" permanece en memoria (a menos que no haya otras referencias a él, en cuyo caso será recolectado por el Garbage Collector).
+
+---------------------------------------
+
+### Garbage Collector:
+
+Mecanismo automático que libera memoria eliminando objetos sin referencias.
+
+---------------------------------------
+
+
+### Diferencia entre == y equals():
+
+== compara referencias en memoria. Ej Para tipos primitivos (como int, char, float, etc.), == compara los valores directamente.
+
+equals() compara el contenido del objeto (puede ser sobrescrito). Ej Objetos, String.
+
+
+---------------------------------------
+
+
+### Optional y su uso:
+
+Es una clase contenedora que evita NullPointerException.
+
+Se usa para representar valores opcionales y manejar nulos de forma segura.
+
+---------------------------------------
+
 ### Cual es la diferenia entre final, finally y finalize?
 
-1.	final:
--   Es una palabra clave que se usa para variables, métodos y clases.
+1.	final: Es una palabra clave que se usa para variables, métodos y clases.
 -   Si una variable es final, no se puede cambiar después de asignarla.
 -   Si un método es final, no se puede sobrescribir en las clases hijas.
 -   Si una clase es final, no se puede heredar.
 
-2.	finally:
--   Es un bloque de código que se usa con try-catch.
+2.	finally: Es un bloque de código que se usa con try-catch.
 -   El bloque finally siempre se ejecuta, sin importar si hubo una excepción o no. Se utiliza para limpiar recursos, como cerrar archivos o conexiones.
-3.	finalize:
--   Es un método que pertenece a la clase Object.
+
+3.	finalize: Es un método que pertenece a la clase Object.
 -   Se llama justo antes de que el garbage collector elimine un objeto de la memoria. Ya casi no se usa porque no es confiable ni   eficiente, y ha sido reemplazado por otros mecanismos como try-with-resources.
 
 :::tip[Conclusión]
@@ -120,7 +168,7 @@ class Pajaro implements Volador(
 :::
 
 
-## Cual es la diferencia entre stack y memoria heap?
+### Cual es la diferencia entre stack y memoria heap?
 1.	Stack (Pila):
 -   Es una porción de memoria que se usa para almacenar variables locales y llamadas a funciones.
 -   Los datos en el stack se almacenan y eliminan en un orden LIFO (Last In, First Out).
@@ -138,7 +186,7 @@ class Pajaro implements Volador(
 :::
 
 
-## Cual es la diferencia entre un método overloading y un método overriding?
+### Cual es la diferencia entre un método overloading y un método overriding?
 
 Overloading (Sobrecarga):
 -   Ocurre cuando en una clase hay métodos con el mismo nombre, pero diferentes parámetros (número o tipo).
@@ -176,7 +224,7 @@ class Perro extends Animal{
 :::
 
 
-## Cual es la diferencia entre un método privado y uno protegido?
+### Cual es la diferencia entre un método privado y uno protegido?
 
 1.	Método privado (private):
     -   Solo puede ser accedido dentro de la misma clase en la que fue declarado.
@@ -215,14 +263,14 @@ class Perro extends Animal{
 
 
 
-## Que es la sobrecarga de un constructor en java?
+### Que es la sobrecarga de un constructor en java?
 
 La sobrecarga de un constructor en Java ocurre cuando una clase tiene varios constructores con el mismo nombre pero con diferentes parámetros. Esto permite crear objetos con diferentes inicializaciones utilizando el mismo nombre de constructor pero con diferentes argumentos.
 
 
-## Que diferencia hay entre metodos statics, variables statics y classes statics en java?
+### Que diferencia hay entre metodos statics, variables statics y classes statics en java?
 
-### Variables estáticas (static):
+### *Variables estáticas (static):*
 
 •	Definición: Variables que pertenecen a la clase y son compartidas entre todas las instancias de esa clase.
 
@@ -243,7 +291,7 @@ Contador.conteo++
 ```
 
 
-### Métodos estáticos (static):
+### *Métodos estáticos (static):*
 •	Definición: Métodos que pertenecen a la clase en lugar de a instancias individuales de la clase.
 
 •	Acceso: Se pueden llamar directamente usando el nombre de la clase sin crear una instancia de la clase.
@@ -266,7 +314,7 @@ int resultado = Matematica.sumar(5,3);
 ```
 
 
-### Clases estáticas (static):
+### *Clases estáticas (static):*
 •	Definición: Solo se pueden declarar clases estáticas dentro de una clase externa. Se conocen como clases internas estáticas.
 
 •	Acceso: No tienen acceso a las variables y métodos no estáticos de la clase externa, pero pueden acceder a las variables y métodos estáticos.
@@ -320,41 +368,41 @@ El garbage collection (recolección de basura) en Java se encarga de limpiar la 
 
 
 
-## ¿Qué características orientadas a objetos soporta Java?
+### ¿Qué características orientadas a objetos soporta Java?
 
 Java soporta las siguientes características orientadas a objetos:
 
-### Encapsulamiento
-- **Definición:** Agrupa datos (atributos) y métodos en una clase y controla el acceso a estos datos mediante modificadores de acceso (public, private, protected).
+### *Encapsulamiento*
+- **Definición:** El encapsulamiento protege los datos de una clase y permite acceder a ellos de manera controlada a través de métodos públicos.
 - **Ejemplo:** Usar métodos getter y setter para acceder a los atributos privados de una clase.
 
-### Herencia
+### *Herencia*
 - **Definición:** Permite que una clase (subclase) herede atributos y métodos de otra clase (superclase), promoviendo la reutilización de código.
 - **Ejemplo:** Una clase `Perro` que hereda de una clase `Animal`.
 
-### Polimorfismo
+### *Polimorfismo*
 - **Definición:** El polimorfismo te permite usar una misma interfaz o método para objetos de distintas clases.
 - **Ejemplo:** Un método `hacerSonido` que puede tener diferentes implementaciones en distintas subclases.
 
-### Abstracción
+### *Abstracción*
 - **Definición:** Permite definir clases abstractas e interfaces para definir un conjunto de métodos que deben ser implementados por las subclases, ocultando los detalles de implementación.
 - **Ejemplo:** Una clase `Figura` abstracta con métodos abstractos como `calcularArea()`.
 
-## ¿Cuáles son los diferentes especificadores de acceso utilizados en Java?
+### ¿Cuáles son los diferentes especificadores de acceso utilizados en Java?
 
 - **public:** Accesible desde cualquier lugar.
 - **protected:** Accesible desde la misma clase, subclases y el mismo paquete.
 - **default:** Accesible solo dentro del mismo paquete.
 - **private:** Accesible solo dentro de la misma clase.
 
-## ¿Cuál es la diferencia entre composición y herencia?
+### ¿Cuál es la diferencia entre composición y herencia?
 
-### Herencia
+### *Herencia*
 - **Definición:** Una clase (subclase) hereda atributos y métodos de otra clase (superclase).
 - **Relación:** Es una relación "es un" (por ejemplo, un `Perro` es un `Animal`).
 - **Uso:** Se utiliza para crear una jerarquía de clases y reutilizar código.
 
-### Composición
+### *Composición*
 - **Definición:** Una clase contiene objetos de otras clases, usando sus funcionalidades.
 - **Relación:** Es una relación "tiene un" (por ejemplo, un `Coche` tiene un `Motor`).
 - **Uso:** Se utiliza para construir objetos complejos a partir de objetos más simples, promoviendo una mayor flexibilidad y menor acoplamiento.
@@ -363,35 +411,35 @@ Java soporta las siguientes características orientadas a objetos:
 - **Herencia:** Una clase hereda de otra (relación "es un").
 - **Composición:** Una clase usa objetos de otras clases (relación "tiene un").
 
-## ¿Cuál es el propósito de una clase abstracta?
+### ¿Cuál es el propósito de una clase abstracta?
 
 El propósito de una clase abstracta en Java es proporcionar una base común para otras clases, permitiendo definir métodos y atributos que pueden ser compartidos por sus subclases, sin proporcionar una implementación completa. 
 
 **Ejemplo:** `Animal` es una clase abstracta que define un método abstracto `hacerSonido()`. La clase `Perro` hereda de `Animal` y proporciona una implementación concreta del método `hacerSonido()`.
 
-## ¿Cuáles son las diferencias entre un constructor y un método de una clase en Java?
+### ¿Cuáles son las diferencias entre un constructor y un método de una clase en Java?
 
-### Propósito
+### *Propósito*
 - **Constructor:** Se usa para inicializar un objeto cuando se crea. Configura el estado inicial del objeto.
 - **Método:** Se usa para realizar operaciones o comportamientos en el objeto después de que ha sido creado.
 
-### Nombre
+### *Nombre*
 - **Constructor:** Tiene el mismo nombre que la clase. No tiene tipo de retorno, ni siquiera `void`.
 - **Método:** Tiene un nombre diferente de la clase y tiene un tipo de retorno, que puede ser cualquier tipo o `void`.
 
-### Invocación
+### *Invocación*
 - **Constructor:** Se invoca automáticamente cuando se crea una instancia del objeto con la palabra clave `new`.
 - **Método:** Se invoca explícitamente después de que el objeto ha sido creado.
 
-### Sobrecarga
+### *Sobrecarga*
 - **Constructor:** Puede ser sobrecargado (varios constructores con diferentes parámetros) dentro de la misma clase.
 - **Método:** También puede ser sobrecargado (varios métodos con el mismo nombre pero diferentes parámetros) dentro de la misma clase.
 
-### Herencia
+### *Herencia*
 - **Constructor:** No se hereda. Cada clase debe definir sus propios constructores.
 - **Método:** Los métodos pueden ser heredados y sobrescritos en las subclases.
 
-## ¿Qué es el problema del diamante en Java y cómo se resuelve?
+### ¿Qué es el problema del diamante en Java y cómo se resuelve?
 
 El problema del diamante es un problema en la programación orientada a objetos que ocurre cuando una clase hereda de dos clases que a su vez heredan de una clase común, creando una ambigüedad en la herencia. Este problema es más común en lenguajes que soportan múltiples herencias, pero en Java, que no permite la herencia múltiple de clases, el problema se presenta principalmente en el contexto de las interfaces.
 
@@ -399,21 +447,21 @@ En Java, el problema del diamante se resuelve de la siguiente manera:
 1. **Interfaces:** Java permite la herencia múltiple de interfaces, por lo que una clase puede implementar múltiples interfaces. La ambigüedad se resuelve porque Java no permite implementar métodos en interfaces (solo se definen), y el compilador garantiza que la clase concreta debe proporcionar una implementación concreta para el método.
 2. **Métodos Default en Interfaces:** A partir de Java 8, las interfaces pueden tener métodos con implementación (default methods). Si una clase implementa dos interfaces que proporcionan métodos default con el mismo nombre, la clase concreta debe proporcionar una implementación para resolver la ambigüedad.
 
-## ¿Cuál es la diferencia entre las variables locales y las variables de instancia en Java?
+### ¿Cuál es la diferencia entre las variables locales y las variables de instancia en Java?
 
-### Ubicación y alcance
+### *Ubicación y alcance*
 - **Variable Local:** Dentro de un método o bloque.
 - **Variable de Instancia:** Dentro de la clase, fuera de métodos.
 
-### Inicialización
+### *Inicialización*
 - **Variable Local:** Debe ser inicializada antes de usarla.
 - **Variable de Instancia:** Se inicializa automáticamente con valores predeterminados.
 
-### Vida Útil
+### *Vida Útil*
 - **Variable Local:** Solo mientras el método o bloque está en ejecución.
 - **Variable de Instancia:** Mientras el objeto exista.
 
-## ¿Qué es una interfaz de marcador en Java?
+### ¿Qué es una interfaz de marcador en Java?
 
 Una interfaz de marcador en Java es una interfaz que no contiene métodos ni campos; simplemente sirve para marcar o etiquetar clases con una intención específica.
 
@@ -421,9 +469,9 @@ Una interfaz de marcador en Java es una interfaz que no contiene métodos ni cam
 
 -------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Estructura de Datos
+## Estructura de Datos 
 
-## ¿Por qué las cadenas (strings) son inmutables en Java?
+### ¿Por qué las cadenas (strings) son inmutables en Java?
 
 **Seguridad:**
 - Las cadenas inmutables proporcionan seguridad adicional porque no pueden ser modificadas una vez creadas. Esto evita problemas relacionados con la alteración inesperada de datos, especialmente en contextos de concurrencia y compartición de datos.
@@ -437,8 +485,10 @@ Una interfaz de marcador en Java es una interfaz que no contiene métodos ni cam
 **Hashing:**
 - La inmutabilidad permite a las cadenas ser usadas de manera eficiente en estructuras de datos basadas en hash (como HashMap y HashSet), ya que su valor no cambia y, por lo tanto, el valor del hash permanece constante.
 
-## ¿Cuál es la diferencia entre crear una cadena (String) usando new() y como un literal?
 
+
+
+### ¿Cuál es la diferencia entre crear una cadena (String) usando new() y como un literal?
 
 ```jsx title="NEW () "
 String str1 = new String("Hola");
@@ -456,7 +506,9 @@ String str2 = "Hola";
 
 - **Memoria:** Si la cadena "Hola" ya está en el pool de cadenas, se reutiliza esa instancia en lugar de crear una nueva. Si no está en el pool, se añade. Ejemplo: `str2` se refiere a la misma instancia de "Hola" que podría estar en el pool de cadenas.
 
-## ¿Qué es el marco de colecciones (Collections Framework) en Java?
+
+
+### ¿Qué es el marco de colecciones (Collections Framework) en Java?
 
 El marco de colecciones en Java es un conjunto de clases e interfaces que proporcionan estructuras de datos y algoritmos para almacenar, manipular y gestionar grupos de objetos. Facilita la organización y el manejo de datos de manera eficiente y estandarizada.
 
@@ -480,13 +532,13 @@ El marco de colecciones en Java es un conjunto de clases e interfaces que propor
 3. **Algoritmos:**
    - El marco de colecciones también proporciona una serie de algoritmos útiles como ordenar, buscar y manipular colecciones de datos a través de la clase Collections.
 
-## ¿Cual es la diferencia entre ArrayList y LinkedList?
+### ¿Cual es la diferencia entre ArrayList y LinkedList?
 
 - **ArrayList:** Usa un array dinámico. Bueno para lecturas rápidas, pero más lento para cambios en el medio.
   
 - **LinkedList:** Usa una lista de nodos enlazados. Bueno para cambios rápidos en los extremos, pero más lento para lecturas.
 
-## ¿Cual es la diferencia entre un HashMap y un TreeMap?
+### ¿Cual es la diferencia entre un HashMap y un TreeMap?
 
 - **Orden:**
   - **HashMap:** No mantiene ningún orden de las claves.
@@ -509,7 +561,7 @@ El marco de colecciones en Java es un conjunto de clases e interfaces que propor
 - **TreeMap:** Ordenado, más lento, no permite claves nulas.
 :::
 
-## ¿Cual es la diferencia entre HashSet y un TreeSet?
+### ¿Cual es la diferencia entre HashSet y un TreeSet?
 
 - **Orden:**
   - **HashSet:** No mantiene ningún orden.
@@ -532,7 +584,7 @@ El marco de colecciones en Java es un conjunto de clases e interfaces que propor
 - **TreeSet:** Ordenado, más lento, más memoria.
 :::
 
-## ¿Cual es la diferencia entre un Iterator y un ListIterator?
+### ¿Cual es la diferencia entre un Iterator y un ListIterator?
 
 **Iterator:**
 - **Dirección de Iteración:** Unidireccional (hacia adelante).
@@ -546,13 +598,13 @@ El marco de colecciones en Java es un conjunto de clases e interfaces que propor
 - **Posición de Iteración:** Proporciona métodos para conocer la posición actual (nextIndex(), previousIndex()).
 - **Uso:** Exclusivo para listas que implementan List (como ArrayList, LinkedList).
 
-## ¿Cual es el propósito de la interfaz Comparable?
+### ¿Cual es el propósito de la interfaz Comparable?
 
 La interfaz Comparable en Java se utiliza para definir un orden natural para los objetos de una clase. Permite comparar objetos de la misma clase, lo que es esencial para ordenar y clasificar.
 
 Una clase que implemente Comparable debe sobrescribir el método compareTo para definir cómo se comparan los objetos de esa clase.
 
-## ¿Cuál es el propósito del paquete java.util.concurrent?
+### ¿Cuál es el propósito del paquete java.util.concurrent?
 
 El propósito del paquete java.util.concurrent es proporcionar herramientas para trabajar con programación concurrente. Facilita la creación y gestión de múltiples hilos y tareas, además de manejar problemas comunes en la programación concurrente.
 
@@ -560,14 +612,14 @@ El propósito del paquete java.util.concurrent es proporcionar herramientas para
 -------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Exception Handling
-## ¿Qué es una excepción?
+### ¿Qué es una excepción?
 Una excepción es un evento que ocurre durante la ejecución de un programa que interrumpe el flujo normal de instrucciones. Las excepciones se utilizan para manejar errores o condiciones especiales que surgen durante la ejecución del programa.  
 Las excepciones se manejan utilizando bloques `try`, `catch` y `finally`:  
 - **try**: Contiene el código que puede lanzar una excepción.  
 - **catch**: Captura y maneja la excepción si ocurre.  
 - **finally**: Opcional, se ejecuta siempre, tanto si ocurre una excepción como si no.  
 
-## ¿Cuál es la diferencia entre excepciones checked y unchecked?
+### ¿Cuál es la diferencia entre excepciones checked y unchecked?
 - **Excepciones Checked**:  
   - Deben ser manejadas explícitamente.  
   - Ejemplos: `IOException`, `SQLException`.  
@@ -575,7 +627,7 @@ Las excepciones se manejan utilizando bloques `try`, `catch` y `finally`:
   - No es necesario manejarlas explícitamente.  
   - Ejemplos: `NullPointerException`, `ArithmeticException`.  
 
-## ¿Cuál es la diferencia entre throw y throws?
+### ¿Cuál es la diferencia entre throw y throws?
 `throw` y `throws` son dos conceptos relacionados con el manejo de excepciones.  
 
 - **throw**:  
@@ -586,23 +638,14 @@ Las excepciones se manejan utilizando bloques `try`, `catch` y `finally`:
   - **Sintaxis**: `public void metodo() throws ExceptionType { ... }`  
 En resumen, `throw` se usa para generar una excepción, mientras que `throws` se usa para declarar que un método puede lanzar una excepción.  
 
-## ¿Cuál es la clase base de las excepciones?
+### ¿Cuál es la clase base de las excepciones?
 - **Throwable**: La clase base de todas las excepciones.  
 - **Error**: Problemas graves del entorno de ejecución.  
 - **Exception**: Problemas que las aplicaciones pueden manejar.  
   - **Checked Exceptions**: Deben ser manejadas explícitamente.  
   - **Unchecked Exceptions**: Opcionalmente manejadas, derivadas de `RuntimeException`.  
 
-## ¿Qué es Java EE (Enterprise Edition)?
-Es una plataforma para desarrollar aplicaciones empresariales en Java. Proporciona una serie de especificaciones y APIs (interfaces de programación de aplicaciones) para construir aplicaciones distribuidas y robustas, principalmente en el entorno de servidores.  
-**Especificaciones y APIs**:  
-- **Servlets**: Para manejar solicitudes y respuestas en aplicaciones web.  
-- **JSP (JavaServer Pages)**: Para crear páginas web dinámicas.  
-- **EJB (Enterprise JavaBeans)**: Para crear componentes de negocio reutilizables y escalables.  
-- **JPA (Java Persistence API)**: Para manejar la persistencia de datos en bases de datos.  
-- **JMS (Java Message Service)**: Para la comunicación asíncrona entre componentes a través de mensajes.  
-- **JAX-RS**: Para crear servicios web RESTful.  
-- **JAX-WS**: Para crear servicios web basados en SOAP.  
+
 
 ## ¿Cuál es la diferencia entre un Servlet y un JSP?
 - **Servlet**: Un servlet es una clase Java que se ejecuta en un servidor web para manejar solicitudes y generar respuestas.  
@@ -619,6 +662,118 @@ Un objeto en Java es una instancia de una clase que tiene un estado definido por
 
 ## ¿Qué es un constructor?
 Un método que se usa para inicializar objetos cuando se crean. Se llama automáticamente cuando se instancia un objeto de la clase.  
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+## Spring Boot
+
+### Maven
+
+Maven es una herramienta que simplifica el proceso de construcción y gestión de proyectos Java al centralizar configuraciones en el archivo pom.xml. 
+
+Incluye:
+
+- Gestión de dependencias.
+
+- Compilación
+
+- Empaquetado
+
+- espliegue
+
+#### Elementos clave de Maven:
+pom.xml (Project Object Model):
+
+El archivo pom.xml es el corazón de cualquier proyecto Maven. Contiene toda la información sobre el proyecto, como las dependencias, los plugins, las configuraciones de compilación y los perfiles de despliegue.
+
+
+#### ¿Que va en el properties?
+
+Configuración con application.properties o application.yml:
+
+Define propiedades como puerto del servidor, conexión a BD, seguridad, logs, etc.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+### Spring framework
+Es un conjunto proyectos de código abierto desarrollados en Java con el objetivo de agilizar el desarrollo de aplicaciones.  Entre los principales proyectos se encuentran:
+
+Spring Boot: Facilita la creación y configuración inicial de proyectos de Spring para generar aplicaciones de fácil y rápida puesta en marcha.
+
+Spring Data: Utilizado para la administración, manejo y comunicación con bases de datos, tanto relacionales como no-relacionales.
+
+Spring Security: Utilizado para las cuestiones de seguridad que puede necesitar todo proyecto.
+
+Spring Web Services: Utilizado para facilitar el desarrollo de Web Services SOAP.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+### Inyección de dependencias
+
+La inyección de dependencias busca desacoplar lo máximo posible la relación entre clases o capas. 
+Una dependencia es una relación que puede existir entre una o varias clases, donde generalmente una  dependen de otra principal.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+### ¿Que es un Bean?
+
+ Un Bean es un objeto gestionado por el contenedor de Spring. Básicamente, es una instancia de una clase que Spring se encarga de crear, inicializar, gestionar su ciclo de vida e inyectar donde sea necesario.
+
+ Ejemplos:
+ @Component = Genérico
+ @Service = Lógica de negocio
+ @Repository = Acceso a datos
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+## Spring Data
+
+Es una capa que usa  JPA/Hibernate que simplifica el acceso a la base de datos y proporciona la interfaz JpaRepository, que evita escribir código repetitivo
+
+Existen diferentes tecnologías, desde las más simples como JDBC (Java Database Connectivity), hasta herramientas más avanzadas conocidas como ORM (Mapeo Objeto Relacional), que nos facilitan la tarea de relacionar nuestras clases en Java con las tablas de las bases de datos.
+
+A continuación, revisaremos algunas de las herramientas ORM más utilizadas en Java junto con Spring Boot.
+
+### JPA
+
+JPA es la API estándar de Java para la persistencia de datos.
+
+- Define interfaces como EntityManager, @Entity, @OneToMany, etc.
+
+- No implementa nada, solo define cómo deben funcionar las cosas
+
+
+### Hibernate (Proveedor de JPA)
+
+El principal objetivo de Hibernate es el de mapear las clases del modelo de datos de una aplicación y así convertirlos o asociarlos a bases de datos, para ello, como se mencionó anteriormente, se utilizan annotations.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+## Spring Security
+
+### Flujo de autenticación con JWT:
+
+Cliente envía credenciales → Servidor valida y genera token → Cliente usa token en cada petición → Servidor valida token y autoriza.
+
+### Diferencia entre autenticación y autorización:
+
+Autenticación: verifica identidad.
+
+Autorización: define qué puede hacer el usuario.
+
+### Proteger API REST con Spring Security:
+
+Configurar SecurityFilterChain, UserDetailsService y autenticación con JWT o OAuth2.
+
+### UserDetailsService y su uso:
+
+Interfaz para cargar detalles del usuario desde BD para autenticación.
+
+### Filtro personalizado en Spring Security:
+
+Extiende OncePerRequestFilter y se registra en la cadena de filtros
+
 
 <br/><br/>
 

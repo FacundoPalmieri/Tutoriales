@@ -4,6 +4,72 @@ sidebar_position: 1
 
 # 1 - Extras
 
+
+## **Nuevos desarrollos**
+
+### Model
+
+#### Colocar @Entity en la clase
+
+-----------------------------------------------
+
+#### Como pensar las relaciones
+
+-   En una relación OneToOne la clave foránea (FK) siempre va en la entidad dependiente de la relación.
+
+Ejemplo, si tenemos 2 entidades:
+    -   User
+    -   Refresh Token
+
+El usuario puede existir sin un refresh (usuario NO autenticado), en cambio para que el refresh se genere debe primero existir un usuario.
+
+```jsx title="Entidad Refresh"
+@OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true)  // FK en RefreshToken
+    private UserSec user;
+``` 
+
+<br/>
+
+-   En una relación OneToMany o ManyToOne la FK SIEMPRE estará del lado de "Muchos", ejemplo:
+
+Un empleado trabaja en un departamento (Empleado ↔ Departamento)
+Un departamento tiene muchos empleados.
+
+Un empleado solo puede pertenecer a un departamento.
+🔹 ¿Quién depende de quién? → Empleado depende de Departamento.
+🔹 ¿Dónde está el "muchos"? → Empleado.
+
+![extra-relaciones](/img/extra-relaciones.png)
+
+<br/>
+
+- Para una relación ManyToMany se crea una tabla intermedia con ambas PK
+
+
+-----------------------------------------------
+
+#### Cuando saber si un dato debe ser una tabla o un campo de otra tabla
+
+![extra-model](../../static/img/extra-model.png)
+
+### Endpoint
+1. Colocar @RestController
+2. Colocar ruta de controller
+3. Que tipo de método? get, post? y ruta
+4. Que tipo de autorización requiere.
+5. Que tipo de respuesta necesito dar?
+6. Que dato necesito recibir y validaciones de entrada debe tener
+7. Realizar la documentación.
+
+### Service
+1.  Colocar @Service en la clase
+2.  Anotaciones de @Transactional para escritura en bd
+3.  Utilizar try catch para BD
+4.  Pensar bien todas las Validaciones e intentar realizar método reutilizables.
+
+------------------------------------------------------------------
+
 ## **Desactivar copilot en VS Code**
 
 ![copilot-vs-1](/img/copilot-vs-1.png)
@@ -86,33 +152,6 @@ public class OdontologiaIntegralFmApiApplication {
 ```
 -------------------------------------------------------
 
-## **Nuevos desarrollos**
-
-### Model
-
-1. Colocar @Entity en la clase
-
-
-![extra-model](../../static/img/extra-model.png)
-
-### Endpoint
-1. Colocar @RestController
-2. Colocar ruta de controller
-3. Colocar ruta de endpoint.
-4. Que tipo de método? get, post?
-6. Que tipo de autorización requiere
-6. Que dato necesito recibir
-7. Que validaciones de entrada debe tener?
-8. Que tipo de respuesta necesito dar?
-9. Realizar la documentación.
-
-### Service
-1.  Colocar @Service en la clase
-2.  Anotaciones de @Transactional para escritura en bd
-3.  Utilizar try catch para BD
-4.  Pensar bien todas las Validaciones e intentar realizar método reutilizables.
-
-------------------------------------------------------------------
 
 ## **Streams y Lambdas**
 
@@ -441,7 +480,30 @@ return temas.stream()
 
 En Spring Data, puedes usar .orElseThrow(() -> ...) en los métodos que devuelven un objeto del tipo Optional < T >, ya que este método es específico de la clase Optional. Aquí te explico cuáles métodos proporcionados por Spring Data son compatibles y en qué casos podrías usar .orElseThrow()
 
-### *Métodos comunes de Spring Data que devuelven Optional*
+### *Métodos personalizados en el repository*
+
+Acá el repositorio ya devuelve un opcional, por tal, en el servicio podemos:
+
+-   Hacer un return directo de la clase que devuelve
+
+-   Asignar a un objeto de la clase.
+
+Em ambos casos se hará uso del .orElseThrow(() -> ...)
+
+
+```jsx title="Repository"
+
+
+``` 
+
+
+
+```jsx title="Servicio"
+
+
+``` 
+
+### *Algunos métodos de Spring Data que devuelven Optional*
 
 1. **findbyId() :** Devuelve un Optional< T > donde T es la entidad que estás buscando.
 
@@ -462,12 +524,6 @@ return temaRepository.findOne(example)
 ```
 <br/><br/>
 
-3. **Otros métodos personalizados con consultas derivadas (@Query)** : Si defines un método en tu repositorio que devuelve Optional< T >, puedes usar .orElseThrow de la misma manera.
-
-```jsx title="repository"
-Optional<Curso> findByNombre(String nombre);
-
-```
 
 
 ### *Métodos que NO son compatibles directamente*

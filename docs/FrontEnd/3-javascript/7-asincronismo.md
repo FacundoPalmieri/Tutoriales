@@ -19,6 +19,23 @@ JavaScript es un lenguaje single-threaded, lo que significa que solo ejecuta una
 
 Es una forma más clara y ordenada de trabajar con promesas. Permite escribir código asincrónico de manera similar a código sincrónico.
 
+
+El await debe usarse dentro de una función asíncrona (es decir, dentro de una función marcada con async), porque su propósito es hacer que esa función específica se "pause" temporalmente en los puntos donde usas await, pero sin bloquear el hilo principal de ejecución. Así, el resto del programa puede seguir funcionando normalmente mientras se espera la resolución de la promesa.
+
+#### ¿Por qué dentro de una función async?
+
+Cuando una función está marcada con async, el await le permite esperar las promesas sin bloquear el flujo de ejecución. Si no estuviera dentro de una función async, usar await provocaría un error, ya que await solo es válido dentro de funciones que se marcan con async.
+
+
+```jsx title="HTML"
+async function obtenerDatos() {
+    // La ejecución se pausa aquí hasta que se resuelva la promesa
+    // fetch permite realizar peticiones Http a una API
+    let respuesta = await fetch("https://jsonplaceholder.typicode.com/users/1");
+}
+``` 
+
+
 Veamos un ejemplo de como funciona
 
 ```jsx title="HTML"
@@ -121,7 +138,7 @@ catch (error) {
 ✔️ El mensaje de error se muestra en la consola con console.error().
 
 
-## El Call Stack y el Event Loop en JavaScript
+## **El Call Stack y el Event Loop en JavaScript**
 
 ### El Call Stack (Pila de llamadas)
 
@@ -195,7 +212,7 @@ Tarea Asíncrona
 6️⃣ console.log("Tarea Asíncrona") se ejecuta.
 
 
-## Temporizadores en JavaScript: setTimeout y setInterval
+## **Temporizadores en JavaScript: setTimeout y setInterval**
 
 En JavaScript, los temporizadores son funciones que permiten programar la ejecución de código en un momento futuro, ya sea una sola vez después de un retraso especificado o repetidamente a intervalos regulares. Los dos métodos principales para manejar temporizadores en JavaScript son setTimeout y setInterval.
 
@@ -257,7 +274,7 @@ const intervalo = setInterval(() => {
 
 
 
-## Manejo de Erroes (Uso de Try-Catch-Finally)
+## **Manejo de Erroes (Uso de Try-Catch-Finally)**
 
 En el desarrollo de software, es crucial manejar correctamente los errores que puedan surgir durante la ejecución del código. JavaScript ofrece una estructura robusta para este propósito: el bloque try-catch-finally. Este bloque permite capturar y manejar errores de manera controlada, asegurando que tu aplicación pueda seguir funcionando incluso cuando se encuentra con problemas inesperados.
 
@@ -389,3 +406,102 @@ obtenerUsuario();
 ``` 
 
 
+## **Concepto de Promesas en JavaScript**
+
+Una Promesa en JavaScript es un objeto que representa la eventual finalización (o fracaso) de una operación asíncrona y su valor resultante. Las Promesas son esenciales para manejar operaciones asíncronas como solicitudes a APIs o temporizadores, permitiendo que el código funcione de manera no bloqueante.
+
+### Estados de una Promesa
+
+Una Promesa puede encontrarse en uno de los siguientes tres estados:
+
+**Pending (Pendiente):** Es el estado inicial. La promesa está en proceso, lo que significa que aún no ha sido cumplida ni rechazada.
+
+**Fulfilled (Resuelta):** La operación se completó con éxito, y la promesa tiene un valor resultante.
+
+**Rejected (Rechazada):** La operación falló, y la promesa tiene una razón para el fallo, generalmente un error. 
+
+### Sintaxis
+
+Una promesa en JavaScript se crea usando el constructor new Promise(), que recibe una función ejecutora con dos parámetros:
+
+**resolve:** Se llama cuando la operación tiene éxito.
+
+**reject:** Se llama cuando la operación falla.
+
+#### Ejemplo
+```jsx title=""
+const miPromesa = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        let exito = true;
+        if (exito) {
+            resolve("Operación exitosa ✅");
+        } else {
+            reject("Error en la operación ❌");
+        }
+    }, 2000);
+});
+
+```
+
+
+### Manejo de estados con then(), catch() y finally()
+
+Para trabajar con los resultados de una Promesa, utilizamos los siguientes métodos:
+
+**then(onFulfilled):** Este método se ejecuta cuando la promesa se resuelve con éxito. Recibe una función que será llamada con el valor resultante de la promesa.
+
+```jsx title=""
+promesa.then((resultado) => {
+    console.log("Promesa resuelta con valor:", resultado);
+});
+``` 
+<br/>
+
+**catch(onRejected):** Este método se ejecuta cuando la promesa es rechazada. Recibe una función que será llamada con la razón del rechazo.
+
+```jsx title=""
+promesa.catch((error) => {
+    console.error("Promesa rechazada con error:", error);
+});
+``` 
+
+<br/>
+
+**finally(onFinally):** Este método se ejecuta independientemente de si la promesa fue resuelta o rechazada. Es útil para ejecutar código de limpieza o de finalización, sin importar el resultado de la promesa.
+
+```jsx title=""
+promesa.finally(() => {
+    console.log("Promesa finalizada, sea cual sea el resultado.");
+});
+``` 
+
+## Ejemplo completo
+
+Imaginemos una función que simula una solicitud de datos a una API utilizando un setTimeout para simular la demora en la respuesta:
+
+```jsx title=""
+const obtenerDatos = () => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            const exito = true; // Cambia esto para probar diferentes resultados
+            if (exito) {
+                resolve("Datos obtenidos correctamente");
+            } else {
+                reject("Error al obtener los datos");
+            }
+        }, 2000);
+    });
+};
+
+obtenerDatos()
+    .then((resultado) => {
+        console.log(resultado);
+    })
+    .catch((error) => {
+        console.error(error);
+    })
+    .finally(() => {
+        console.log("Operación completada.");
+    });
+```
+En este ejemplo, obtenerDatos() devuelve una promesa que se resuelve o rechaza después de 2 segundos. Dependiendo del valor de exito, la promesa será resuelta o rechazada. El then() maneja el resultado exitoso, catch() maneja cualquier error, y finally() se ejecuta al final de cualquier manera.
