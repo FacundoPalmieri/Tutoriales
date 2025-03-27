@@ -652,6 +652,8 @@ En resumen, `throw` se usa para generar una excepción, mientras que `throws` se
 - **JSP (Java Server Page)**: JSP es una tecnología para crear contenido web dinámico. Permite insertar código Java directamente en archivos HTML para generar contenido dinámico.  
 
 ## ¿Cuál es el propósito de JPA (Java Persistence API)?
+JPA (Java Persistence API) es una especificación de Java para el mapeo objeto-relacional (ORM). En otras palabras, permite convertir objetos Java en registros de una base de datos sin necesidad de escribir queries SQL manualmente.
+
 El propósito principal es simplificar el manejo de datos almacenados en bases de datos relacionales. JPA facilita el manejo de datos en aplicaciones Java al proporcionar un marco para mapear objetos Java a tablas de bases de datos, gestionar el ciclo de vida de las entidades, realizar consultas y manejar transacciones, todo ello utilizando un enfoque orientado a objetos.  
 
 ## ¿Qué es una clase?

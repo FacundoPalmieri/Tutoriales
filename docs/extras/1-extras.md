@@ -9,11 +9,10 @@ sidebar_position: 1
 
 ### Model
 
-#### Colocar @Entity en la clase
+#### -   Colocar @Entity en la clase
 
------------------------------------------------
 
-#### Como pensar las relaciones
+#### -   Como pensar las relaciones
 
 -   En una relación OneToOne la clave foránea (FK) siempre va en la entidad dependiente de la relación.
 
@@ -46,27 +45,93 @@ Un empleado solo puede pertenecer a un departamento.
 
 - Para una relación ManyToMany se crea una tabla intermedia con ambas PK
 
+<br/>
 
------------------------------------------------
 
-#### Cuando saber si un dato debe ser una tabla o un campo de otra tabla
+#### -  Cuando saber si un dato debe ser una tabla o un campo de otra tabla
 
 ![extra-model](../../static/img/extra-model.png)
 
-### Endpoint
+-----------------------------------------------
+
+### Controller
 1. Colocar @RestController
 2. Colocar ruta de controller
+
+```jsx title="Ejemplo "
+@RestController
+@RequestMapping("/api/user") <--------------------------------
+public class UserController {
+
+    // Crear un usuario <--------------------------------
+    @PostMapping    
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        // Implementación
+    }
+
+    // Eliminar un usuario por ID  <--------------------------------
+    @DeleteMapping("/{id}") 
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        // Implementación
+    }
+
+    // Actualizar parcial un usuario  <--------------------------------
+    @PatchMapping  
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+        // Implementación
+    }
+
+    // Buscar un usuario por ID  <--------------------------------
+    @GetMapping("/{id}")  
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        // Implementación
+    }
+
+    // Obtener todos los usuarios  <--------------------------------
+    @GetMapping ("/all") 
+    public ResponseEntity<List<User>> getAllUsers() {
+        // Implementación
+    }
+}
+
+```
+
+
 3. Que tipo de método? get, post? y ruta
 4. Que tipo de autorización requiere.
 5. Que tipo de respuesta necesito dar?
 6. Que dato necesito recibir y validaciones de entrada debe tener
 7. Realizar la documentación.
 
+
+-----------------------------------------------
+
 ### Service
 1.  Colocar @Service en la clase
-2.  Anotaciones de @Transactional para escritura en bd
+2.  Anotaciones de @Transactional para escritura en bd solo a **metodos públicos**
 3.  Utilizar try catch para BD
 4.  Pensar bien todas las Validaciones e intentar realizar método reutilizables.
+5.  Nombre de métodos:
+  
+    ✔ Usa getXxx si el objeto siempre debe existir y lanzarás una excepción si no lo encuentras (Servicio)
+
+    ✔ Usa findXxx si el objeto puede no existir y quieres que el llamador decida cómo manejarlo.(Repositorio)
+
+    **Resumen**
+
+    **Repositorios:** Los métodos del repositorio, como findById, están diseñados para realizar consultas y devolver resultados, pero no deben lanzar excepciones. Devuelven un Optional< T> o List< T>, ya que el recurso puede o no existir.
+    -   find
+    -   findAll
+    -   exists
+    -   etc.
+
+    **Servicios:** En el servicio, los métodos deberían ser responsables de validar si los resultados del repositorio cumplen con las expectativas de la lógica de negocio. Si un recurso debe existir, entonces el método del servicio puede usar getXxx y lanzar excepciones si no se encuentra el recurso.
+    -  get
+    -  create
+    -  update
+    -  delete
+    -  etc
+
 
 ------------------------------------------------------------------
 
@@ -492,14 +557,19 @@ Em ambos casos se hará uso del .orElseThrow(() -> ...)
 
 
 ```jsx title="Repository"
-
+@Repository
+public interface IRoleRepository extends JpaRepository<Role, Long> {
+    Optional<Role> findRoleEntityByRole(String role);
+}
 
 ``` 
 
 
 
 ```jsx title="Servicio"
-
+protected Role findbyRole(String role){
+    return roleRepository.findRoleEntityByRole(role).orElseThrow(()-> new RoleNotFoundException("", 0L, role, "RoleService", "findbyRole"));
+}
 
 ``` 
 
