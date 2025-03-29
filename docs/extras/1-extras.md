@@ -372,30 +372,46 @@ List<TemaDto> temaDtos = temas.stream()                           // Fuente: Str
 
 
 
-```jsx title="Curso"
-    private List<Tema> listaDeTemas;
-```
+```jsx title="DTO"
+@Data
+@Builder
+public class LoginResponseDTO {
 
+    private Long id;
+    private String username;
+    private Set<Role> roles; // Lista de Roles
+    private String jwt;
+    private String refreshToken;
+}
+
+```
 
 
 ```jsx title="Ejemplo"
-
-
- private CursoDto converToDto (Curso curso) {
-
-        return CursoDto.builder()
-                .id(curso.getId())
-                .nombre(curso.getNombre())
-                .modalidad(curso.getModalidad())
-                .fecha_finalizacion(curso.getFecha_finalizacion())
-                .listaDeTemas(curso.getListaDeTemas().stream() // Que Tipo de dato tiene la lista? RTA = TEMA
-                        .map(tema -> tema.getId()) // De ese tema, obtengo el ID
-                        .toList())
-        .build();
-
-
-    }
+  LoginResponseDTO.builder()
+                    .id(userSec.getId())
+                    .username(userSec.getUsername())
+                    .roles(userSec.getRolesList().stream() // 1. 
+                           .map(role -> new Role(role.getId(), role.getRole(), role.getPermissionsList ())) // 2
+                            .collect(Collectors.toSet()) // 3
+                    )
+                    .jwt(accessToken)
+                    .refreshToken(refreshToken.getRefreshToken())
+                    .build();                   
 ```
+
+<br/>
+
+#### Explicación.
+
+1. stream() permite recorrer la colección y aplicar transformaciones (map()) sin necesidad de un bucle manual.
+
+2. El método .map() en Java Stream transforma cada elemento de una colección en otro valor.
+En cada role, creamos una nueva instancia y asignamos valores en el constructor.
+
+3. El método .collect(Collectors.toSet()) en Java convierte un Stream en una colección (como Set, List, Map, etc.)
+
+<br/>
 
 
 #### Ejemplo con Referencia de Método
