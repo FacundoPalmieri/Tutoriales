@@ -9,60 +9,62 @@ En este apartado intentaremos comprender los concpetos generales, mediante el pa
 
 ## Flujo del proceso -  Autenticación con credenciales (usuario y contraseña)
 
-1. **Inicio de sesión del usuario:**
-    -   El usuario ingresa sus credenciales.
+1. #### Inicio del Proceso de Autenticación
 
-    -   El **AuthenticationController** recibe las credenciales en un DTO y llama al método **loginUser** de la clase **userDetailsService** para validarlas.
+    - El proceso comienza cuando el usuario intenta iniciar sesión enviando sus credenciales (nombre de usuario y contraseña) al endpoint ("/login"). La solicitud es procesada por el método **login()** en el controlador, el cual delega la autenticación al servicio **userDetailsService.loginUser()**.
+
+    ```jsx title=""
+    @PostMapping("/login")
+    public ResponseEntity<Response<AuthResponseDTO>> login(@RequestBody @Valid AuthLoginRequestDTO userRequest) {
+        Response<AuthResponseDTO> response = this.userDetailsService.loginUser(userRequest);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    ```
+
+  
 
     - *(La clase userDetailsService tiene métodos que gestionan la autenticación de los usuarios, valida las credenciales, y devuelve un token JWT cuando la autenticación es exitosa.)*
 
-2. **Autenticación de las credenciales**
+2. #### Autenticación de las credenciales
 
     -   El método **LoginUser** autentica las credenciales por medio del método **authenticate** de la misma clase.
 
----------
-#### Proceso interno del authenticate.
+3. #### authenticate.
 
-    -   2.1 El método **authenticate** realiza dos pasos principales:
+    -   3.1 El método **authenticate** realiza tres pasos principales:
 
-        -   Por medio del método **loadUserByUsername**  recupera los detalles del usuario desde la base de datos(Ej Roles y permisos) y los carga en una lista GrantedAuthority que luego se asignará a la autenticación.
-    
-        -   Verifica la contraseña recibida utilizando **PasswordEncoder** y, si es correcta, se genera un objeto de autenticación **UsernamePasswordAuthenticationToken** que contiene Nombre de usuario, contraseña y lista de roles y permisos.
+        - **Obtiene los detalles del usuario** : Por medio del método **loadUserByUsername**  recupera los detalles del usuario desde la base de datos(Ej Roles y permisos) y los carga en una lista GrantedAuthority que luego se asignará a la autenticación. Este es un método crucial porque Spring Security necesita los detalles del usuario en un formato específico (UserDetails) para realizar la autenticación.
 
-    -   2.2. En la clase **SecurityConfig** se van a configurar todos los componentes de Spring Security:
+            -----------------------------------------------------------------------------
+            #### loadUserByUsername
 
-        -  **Cadenas de filtro de validación.**
-            -   Desactivar CSRF: vulnerabilidad en la que un atacante puede hacer que un usuario autenticado realice acciones no deseadas en una aplicación web.
-            -  Configura el formulario de inicio de sesión estándar.
-            -  Session Creation Policy se establece como STATELESS, lo que significa que la aplicación no mantendrá estado de sesión entre las solicitudes.
-            -  Se agrega un filtro personalizado de validación (JwtTokenValidator) que se ejecuta antes del filtro de autenticación estándar de   Spring Security (BasicAuthenticationFilter).
-            -  Se configura el inicio de sesión con OAuth2, permitiendo que los usuarios inicien sesión usando proveedores de autenticación como Google, Facebook, GitHub, etc.
+            -   El método retorna un UserDetails, que es una interfaz de Spring Security que encapsula la información necesaria para la autenticación y autorización de un usuario.
 
-        -  **AuthenticationManager.**
-        -  **AuthenticationProvider.**
-        -  **PasswordEncoder.**
-    
-    
+            -   Spring Security utiliza un objeto **User** con los detalles de usuario que contiene la lista de roles y permisos en formato **GrandAuthorityList**
 
-    -   2.3 Una vez que la autenticación se inicia, el **AuthenticationManager** es responsable de gestionar el proceso de autenticación y validación. Cuando se inicia el proceso con un **UsernamePasswordAuthenticationToken**, el **AuthenticationManager** delega la tarea de validación y autenticación en uno o más **AuthenticationProvider** (en este caso, puede ser OAuth2, dependiendo de la configuración).
+            -   Si no se devuelve un UserDetails, Spring Security no podría gestionar correctamente el proceso de autenticación ni autorizar al usuario para acceder a recursos protegidos.
 
-        -   **Validación:** Asegura que las credenciales proporcionadas (como el nombre de usuario y la contraseña) sean correctas, es decir, que coincidan con lo que está almacenado en la base de datos.
+            --------------------------------------------------------------------------------
 
-        -   **Autenticación:** Una vez validadas las credenciales, el sistema confirma que la persona que está intentando acceder es quien dice ser, asignándole los permisos correspondientes y creando un objeto de autenticación (por ejemplo, un UsernamePasswordAuthenticationToken que contiene la información del usuario y sus roles).
+        -  **Compara Contraseñas**:  Verifica la contraseña recibida utilizando **PasswordEncoder**, en caso de no coinicidir, incrementa los intentos fallidos y bloquea la misma si alcanza el limite.
 
-    -   2.4. El **DaoAuthenticationProvider**  se encarga de autenticar a los usuarios, utilizando el **UserDetailsService** para cargar los detalles del usuario y el **PasswordEncoder** para comparar la contraseña.
+        - Verifica si la cuenta está activa
 
-    -   2.5. El **PasswordEncoder** es fundamental para la seguridad, ya que en lugar de almacenar la contraseña en texto plano, se almacena en forma de hash, y durante el proceso de autenticación, se compara el hash de la contraseña proporcionada con el almacenado. Utiliza BCryptPasswordEncoder, que es uno de los algoritmos de hash más seguros disponibles en Spring Security.
+        - Luego de pasar todos los filtros, reinicia a cero los intentos fallidos de inicio de sesión
 
-    -   2.6 Sino se presentan errores, la autenticación fue correcta y continúa el flujo en el método **loginUser**
+        - **Genera Authentication**: Si las credenciales son correctas, el método crea un objeto **UsernamePasswordAuthenticationToken** con el nombre de usuario, la contraseña y las autoridades del usuario con el userDetails recibido del **loadUserByUsername** . Este objeto es esencial porque es lo que Spring Security usa para mantener la autenticación del usuario en el contexto de seguridad.
 
----------
 
-3. **Generación del JWT y respuesta al cliente:**
 
-Cuando la autenticación es exitosa, el método **loginUser** realiza:
+<br/>
+
+
+4. **Generación del JWT y respuesta al cliente:**
+
+Cuando la autenticación es exitosa, se devuelve el control al método **loginUser** que realiza:
+
     - Almacenamiento de la autenticación en **SecurityContextHolder**
-    *(El objeto Authentication contiene información sobre el usuario autenticado, como el nombre de usuario, contraseñas y roles o permisos.)*
+    *(El objeto Authentication contiene información sobre el usuario autenticado, como el nombre de usuario, contraseñas y roles o permisos. De aqui tomará información los filtros de seguridad)*
 
     - Llama al método **createToken** en la clase JwtUtils, lo que genera un JWT que contiene:
 
@@ -76,17 +78,33 @@ Cuando la autenticación es exitosa, el método **loginUser** realiza:
 
 *(La clase JwtUtils se encarga de manejar la creación, validación y extracción de información de un token JWT)*
 
-    -  Por último, el método **loginUser** devuelve un objeto AuthResponseDTO, que incluye el nombre de usuario y el token JWT. Este token deberá ser almacenado por el cliente (por ejemplo, en el almacenamiento local o en cookies seguras) y enviado en las solicitudes futuras mediante el encabezado HTTP Authorization.
+    - **Elimina el Refresh Token anterior y genera uno nuevo**: Además del JWT, también se genera un refresh token, que se guarda en la base de datos. Este token permite renovar el JWT sin requerir que el usuario ingrese sus credenciales nuevamente.
 
-4. **Validación del token en solicitudes posteriores:**
+    -  Por último, el método **loginUser** devuelve un objeto AuthResponseDTO, que incluye:
+        - El nombre de usuario y los roles del usuario.
 
-Cuando el cliente envía una solicitud posterior con el token JWT, el **JwtTokenValidator** realiza los siguientes pasos:
+        - El JWT generado
+
+        - El refresh Token  
+    
+     El token y el refresh Token deberá ser almacenado por el cliente (por ejemplo, en el almacenamiento local o en cookies seguras) y enviado en las solicitudes futuras mediante el encabezado HTTP Authorization.
+
+
+5. **Validación del token en solicitudes posteriores:**
+
+Cuando el cliente envía una solicitud posterior con el token JWT, la cadena de filtros del jwt intercepta la solicitud y  el **JwtTokenValidator** realiza los siguientes pasos:
 
     -   Extrae el token JWT del encabezado Authorization de la solicitud HTTP.
     -   Verifica la validez del token: Se valida que el token no haya expirado y que su firma sea válida utilizando la clave secreta y el algoritmo HMAC256.
     -   Extrae la información del token: Una vez validado, se extraen los datos contenidos en el token, como el nombre de usuario y las autoridades. Estos datos se utilizan para autenticar al usuario y otorgar acceso a los recursos solicitados.
     -   Si el token es válido, la autenticación se completa con éxito y Spring Security configura el contexto de seguridad para la solicitud posterior.
 
+6. **Renovación del JWT con Refresh Token**: Si el JWT expira, el método refreshToken() permite renovar el JWT utilizando el refresh token.
+    -   Se valida el refresh token, se elimina el antiguo y se genera uno nuevo.
+    -   Se genera un nuevo JWT y se devuelve al usuario junto con el nuevo refresh token.
+
+
+-------------------------------------------------------
 
 ## Flujo del proceso -  Autenticación con Google OAuth2
 
@@ -110,11 +128,15 @@ Cuando el cliente envía una solicitud posterior con el token JWT, el **JwtToken
 
     -   Si el usuario está registrado, se llama a createToken en JwtUtils para generar un JWT.
 
-6. **Respuesta al cliente**
+6. **Generación del Refresh Token:**
+
+    -   Se genera el refresh token.
+
+7. **Respuesta al cliente**
 
     -   El JWT se añade al encabezado de la respuesta con Authorization: Bearer [token]
 
-7. **Validación del token en solicitudes posteriores:**
+8. **Validación del token en solicitudes posteriores:**
 
 Cuando el cliente envía una solicitud posterior con el token JWT, el **JwtTokenValidator** realiza los siguientes pasos:
 
@@ -125,23 +147,58 @@ Cuando el cliente envía una solicitud posterior con el token JWT, el **JwtToken
 
 
 
-### *Resumen del Proceso de Autenticación*
+### *Funcionamiento Interno de la Autenticación*
 
-1.  **Inicio de sesión del usuario:**
+#### 📌 ¿Cómo Spring Security procesa la autenticación?
 
-    -   Dependiendo del método de autenticación, sigue el flujo 1 o el flujo 2.
+#### Filtros HTTP interceptan las solicitudes:
 
-2. **Configuración de Spring Security:**
+Antes de llegar al controlador, las solicitudes HTTP pasan por una cadena de filtros de seguridad ubicado en **appConfig**. Este flujo incluye un filtro de autenticación JWT(implementado manualmente) que intercepta la solicitud para realizar tareas como:
 
-    -   En SecurityConfig, se configuran todas las propiedades de seguridad, incluyendo los filtros personalizados según el método de autenticación.
+-   Extraer el token JWT de la cabecera de la solicitud.
 
-3.  **Respuesta al cliente:**
+-   Validar la firma del token.
 
-    -   En ambos flujos, el cliente recibe el JWT y lo almacena para futuras solicitudes.
+-   Comprobar la validez del token (es decir, si no ha expirado).
 
-4. **Validación del token en solicitudes posteriores:**
+Este proceso ocurre al principio del ciclo de vida de la solicitud HTTP, antes de que Spring Security procese la autenticación. Si todo es correcto, Spring Security delega automáticamente la responsabilidad del proceso de autenticación al AuthenticationManager.
 
-    -   El JwtTokenValidator gestiona la extracción y verificación del token en cada solicitud protegida.
+
+#### AuthenticationManager recibe las credenciales y delega la validación:
+
+El AuthenticationManager es el componente que recibe las credenciales de autenticación (nombre de usuario y contraseña) y delega la validación a un AuthenticationProvider específico.
+
+En nuestra implementación, no se usa el AuthenticationManager directamente como Spring Security lo haría por defecto, sino que se creó una lógica personalizada en el método authenticate. Sin embargo, el AuthenticationManager sigue siendo responsable de coordinar este proceso.
+
+#### AuthenticationProvider se encarga de autenticar al usuario:
+
+El AuthenticationProvider se encarga de autenticar al usuario validando las credenciales con los datos almacenados en la base de datos. En tu caso, este paso ocurre implícitamente dentro de la implementación personalizada de autenticación.
+
+-   **Método loadUserByUsername(username):** Este es el punto donde Spring Security (o nuestra implementación personalizada) recupera la información del usuario. Si el usuario no existe, lanzará una excepción (como UserNameNotFoundException). Si el usuario existe, el siguiente paso es validar las credenciales.
+
+-   **Llamada al método authenticate:** acá es donde la lógica desarrollada en el proyecto se encarga de realizar la validación de las credenciales. Spring Security, a través de su AuthenticationProvider, haría este paso automáticamente en su flujo, pero lo estás manejando tú explícitamente.
+
+#### PasswordEncoder verifica que la contraseña sea correcta:
+
+En este punto, el PasswordEncoder compara la contraseña proporcionada por el usuario con la almacenada en la base de datos.
+
+En nuestra implementación, este paso es gestionado de manera explícita en el método authenticate. Si las contraseñas no coinciden, el flujo incrementa los intentos fallidos y puede bloquear la cuenta si se alcanzan los límites establecidos.
+
+En caso de éxito se retorna un objeto Authentication **UsernamePasswordAuthenticationToken** al método **loginUser**
+
+Este paso, que estás manejando de manera explícita, normalmente sería gestionado automáticamente por el AuthenticationProvider en un flujo estándar de Spring Security.
+
+####  El flujo regresa a tu método loginUser después de la autenticación exitosa:
+
+Si la autenticación es exitosa, en el método **loginUser** se realiza las siguientes acciones: 
+
+- El objeto Authentication (que contiene detalles como el nombre de usuario y las autoridades) se almacena en el SecurityContextHolder. Esto permite que el usuario esté autenticado y acceda a los recursos protegidos del sistema durante su sesión, sin necesidad de volver a ingresar sus credenciales en cada solicitud.
+
+- Se elimina el refresh Token anterior.
+
+- Se generar el JWT y el nuevo Refresh Token.
+
+- Se devuelve al cliente un objeto authResponseDTO, con detalles del usuario autenticado.
 
 -----------
 
