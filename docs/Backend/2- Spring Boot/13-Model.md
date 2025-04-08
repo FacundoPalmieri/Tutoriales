@@ -213,7 +213,7 @@ public class Club {
 
 ```jsx title="class Club"
 @Entity
-@Table(name = "coachs") // Definiendo el nombre de la tabla en la base de datos en PLURAL
+@Table(name = "clubes") // Definiendo el nombre de la tabla en la base de datos en PLURAL
 public class Club {
 
     @Id // Clave Primaria
