@@ -164,3 +164,22 @@ Toastify({
 
 
 Toastify es una herramienta poderosa y flexible para añadir notificaciones a tus aplicaciones web. Mediante el uso de propiedades como gravity, position, y style, puedes personalizar completamente la apariencia y ubicación de las notificaciones, asegurando que se adapten a las necesidades específicas de tu proyecto. Estas configuraciones permiten mejorar significativamente la experiencia del usuario, manteniéndolo informado de manera sutil y no intrusiva.
+
+
+### Sweet Alert (Recomendado)
+
+#### Instalación 
+
+```jsx title="bash"
+npm install sweetalert2
+``` 
+
+
+```jsx title="script"
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+``` 
+
+
+#### URL  
+
+https://sweetalert2.github.io/
