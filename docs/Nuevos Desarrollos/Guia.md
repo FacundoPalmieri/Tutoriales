@@ -198,6 +198,58 @@ Si la autenticación es exitosa, en el método **loginUser** se realiza las sigu
 
 - Se devuelve al cliente un objeto authResponseDTO, con detalles del usuario autenticado.
 
+
+----------------------------------------------------
+## Java Mail Sender
+
+Es una interfaz de Spring que actúa como un cliente de correo. Permite enviar emails desde una aplicación Java utilizando el protocolo SMTP( Simple Mail Transfer Protocol - Protocolo simple de transferencia de correo) por ejemplo, usando Gmail, Outlook, etc.
+
+Se puede: 
+
+-   Adjuntar archivos con MimeMessageHelper.
+
+-   Enviar correos HTML.
+
+-   Enviar a varios destinatarios.
+
+-   Agregar imágenes incrustadas.
+
+<br/>
+
+1.  Configuración del servidor SMTP
+
+En el archivo application.properties o application.yml, configuras los datos del servidor de correo.
+
+```jsx title=""
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=tu.email@gmail.com
+spring.mail.password=tu_contraseña
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+``` 
+
+
+
+2. Crear un servicio e inyecatar JavaMailSender
+
+```jsx title=""
+@Autowired
+private JavaMailSender mailSender;
+
+``` 
+
+3. Crear el mensaje
+```jsx title=""
+SimpleMailMessage message = new SimpleMailMessage();
+message.setFrom("tu.email@gmail.com");
+message.setTo("destinatario@email.com");
+message.setSubject("Asunto del correo");
+message.setText("Contenido del correo");
+
+``` 
+
+
 ----------------------------------------------------
 ## Estructura de datos
 
@@ -409,6 +461,55 @@ En la entidad Uno:
 2. Define el nombre de la columna de clave foránea en la tabla intermedia (club_competitions) que apunta a la entidad actual (Club). En este caso, la columna club en la tabla intermedia referenciará el ID de la tabla Club.
 
 3. Define el nombre de la columna de clave foránea inversa en la tabla intermedia que apunta a la entidad relacionada (Competition).
+
+
+<br/>
+
+### Herencia
+
+🔧 En JPA (Spring Boot):
+
+Usa @Inheritance(strategy = InheritanceType.JOINED)
+
+-   Es más normalizada, cada tabla representa una sola entidad, y se conecta por id.
+
+
+```jsx title="Clase Persona - Padre"
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Persona {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String nombre;
+}
+
+``` 
+
+
+
+```jsx title="Clase Empleado - Hija"
+@Entity
+public class Empleado extends Persona {
+
+    //Hereda id de persona
+
+    private String legajo;
+}
+
+``` 
+
+⚠️ IMPORTANTE:
+
+-   No hay que declarar @Id en la clase hija (Empleado), ya lo hereda de Persona.
+
+-   No necesitás poner manualmente la relación entre las tablas. JPA lo maneja.
+
+
+
+![herencia-jpa.png](/img/herencia-jpa.png)
 
 
 -----------------------------------------------
