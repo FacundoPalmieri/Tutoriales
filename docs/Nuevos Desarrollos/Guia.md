@@ -635,3 +635,21 @@ Crear uno por cada entidad. En algunos casos podría hacerse un solo service (ej
 @Repository
 public interface IRefreshTokenConfigRepository extends JpaRepository<RefreshTokenConfig, Long>
 ``` 
+
+Métodos básicos sin necesidad de agregar nada en Respository: 
+
+-   findAll()
+
+-   findById(ID id)
+
+-   save(T entity)
+
+-   saveAll(Iterable< T > entities)
+
+-   deleteById(ID id)
+
+-   delete(T entity)
+
+-   existsById(ID id)
+
+-   count()

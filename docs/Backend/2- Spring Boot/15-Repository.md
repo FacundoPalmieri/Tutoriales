@@ -67,6 +67,26 @@ public class Curso {
 }
 ```
 
+## Métodos Básicos proporcionados por JPA
+
+
+Métodos básicos sin necesidad de agregar nada en Respository: 
+
+-   findAll()
+
+-   findById(ID id)
+
+-   save(T entity)
+
+-   saveAll(Iterable< T > entities)
+
+-   deleteById(ID id)
+
+-   delete(T entity)
+
+-   existsById(ID id)
+
+-   count()
 
 ## **Consultas Personalizadas - JPQL (Java Persistence Query Language)**
 
