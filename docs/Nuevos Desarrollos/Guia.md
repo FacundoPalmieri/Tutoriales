@@ -199,7 +199,9 @@ Si la autenticación es exitosa, en el método **loginUser** se realiza las sigu
 - Se devuelve al cliente un objeto authResponseDTO, con detalles del usuario autenticado.
 
 
-----------------------------------------------------
+## --------------------------------------
+
+
 ## Java Mail Sender
 
 Es una interfaz de Spring que actúa como un cliente de correo. Permite enviar emails desde una aplicación Java utilizando el protocolo SMTP( Simple Mail Transfer Protocol - Protocolo simple de transferencia de correo) por ejemplo, usando Gmail, Outlook, etc.
@@ -250,7 +252,8 @@ message.setText("Contenido del correo");
 ``` 
 
 
-----------------------------------------------------
+## --------------------------------------
+
 ## Estructura de datos
 
 ### Normalización de tablas
@@ -373,16 +376,40 @@ La relación solo está del lado de la tabla intermedia.
 
 <br/>
 
-----------------------------------------------------
+## --------------------------------------
 
 
 ## Model
 
 -   Colocar @Entity en la clase
 
+-   Colocar @Data en la clase
+
 -   Nombrar la tabla en inglés @Table(name= "nombre")
 
 -   Agregar restricciones de bases de datos en los atributos con la anotación @Column o @JoinColumn para relaciones.
+
+
+```jsx title="Ejemplo"
+@Entity
+@Data
+@Table(name= "countries")
+public class Pais {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @Column(length = 15, unique = true, nullable = false)
+    private String name;
+
+    @Column(length = 15, unique = true, nullable = false)
+    private String nationality;
+
+    @Column(nullable = false)
+    private boolean enabled;
+}
+``` 
 
 
 <br/>
@@ -512,7 +539,7 @@ public class Empleado extends Persona {
 ![herencia-jpa.png](/img/herencia-jpa.png)
 
 
------------------------------------------------
+## --------------------------------------
 
 ## Controller
 1. Colocar @RestController
@@ -525,25 +552,25 @@ public class UserController {
 
     // Crear un usuario <--------------------------------
     @PostMapping    
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         // Implementación
     }
 
     // Eliminar un usuario por ID  <--------------------------------
     @DeleteMapping("/{id}") 
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@Valid @PathVariable Long id) {
         // Implementación
     }
 
     // Actualizar parcial un usuario  <--------------------------------
     @PatchMapping  
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+    public ResponseEntity<User> updateUser(@Valid @PathVariable Long id, @RequestBody User user) {
         // Implementación
     }
 
     // Buscar un usuario por ID  <--------------------------------
     @GetMapping("/{id}")  
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<User> getUserById(@Valid @PathVariable Long id) {
         // Implementación
     }
 
@@ -564,7 +591,7 @@ public class UserController {
 7. Realizar la documentación.
 
 
------------------------------------------------
+## --------------------------------------
 
 ## Service
 1.  Colocar @Service en la clase
@@ -593,4 +620,18 @@ public class UserController {
     -  etc
 
 
-------------------------------------------------------------------
+## --------------------------------------
+
+## Repository
+
+Crear uno por cada entidad. En algunos casos podría hacerse un solo service (ej: geoService) que se conecte a cada repository (ej, pais, prov, localidad)
+
+
+1. Poner annotation @Repository
+
+2. Implementa JpaRepository < NombreEntidad, TipoDatoId >
+
+```jsx title=""
+@Repository
+public interface IRefreshTokenConfigRepository extends JpaRepository<RefreshTokenConfig, Long>
+``` 
