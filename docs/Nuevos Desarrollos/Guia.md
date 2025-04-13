@@ -385,6 +385,18 @@ La relación solo está del lado de la tabla intermedia.
 
 -   Colocar @Data en la clase
 
+    -   Lombok crea automáticamente:
+
+        ✅ getters y setters para todos los campos
+
+        ✅ toString()
+
+        ✅ equals() y hashCode()
+
+        ✅ Un constructor vacío
+
+        ✅ Métodos canEqual() (útil para herencia)
+
 -   Nombrar la tabla en inglés @Table(name= "nombre")
 
 -   Agregar restricciones de bases de datos en los atributos con la anotación @Column o @JoinColumn para relaciones.
@@ -570,7 +582,7 @@ public class UserController {
 
     // Buscar un usuario por ID  <--------------------------------
     @GetMapping("/{id}")  
-    public ResponseEntity<User> getUserById(@Valid @PathVariable Long id) {
+    public ResponseEntity<User> getUserById(@NotNull @PathVariable ("id") Long idObjeto) {
         // Implementación
     }
 
@@ -590,6 +602,18 @@ public class UserController {
 6. Que dato necesito recibir y validaciones de entrada debe tener
 7. Realizar la documentación.
 
+
+### Path Variable
+
+```jsx title=""
+ @GetMapping("/localities/{id}")
+    @PreAuthorize("hasAnyRole(@userRolesConfig.administradorRole," +
+            "                 @userRolesConfig.secretariaRole)")
+    public ResponseEntity<Response<List<LocalityResponseDTO>>> getLocalitiesByIdProvinces(@NotNull @PathVariable("id") Long idProvinces) {
+        Response<List<LocalityResponseDTO>>response = geoService.getLocalitiesByIdProvinces(idProvinces);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+``` 
 
 ## --------------------------------------
 

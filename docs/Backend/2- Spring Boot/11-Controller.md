@@ -70,6 +70,7 @@ La estructura de las URLs en los controladores puede definirse de dos maneras: r
 
 
 ### 1. Request Parameters: 
+
 Se utiliza para recibir información a través de la URL. 
 :::tip
 Generalmente se aplica en métodos GET, aunque también puede ser útil en otros métodos HTTP.
@@ -77,7 +78,7 @@ Generalmente se aplica en métodos GET, aunque también puede ser útil en otros
 
 A su vez, dentro del Request Parameters, hay dos formas comunes de extraer información de las URLs:
 
-#### @PathVariable: 
+### @PathVariable: 
 Se utiliza para extraer valores dinámicos directamente de la estructura de la URL. Los parámetros de @PathVariable forman parte de la ruta.
 
  **La sintaxis para extraer el valor de la URL es: @PathVariable + Tipo de dato + Variable**
@@ -100,9 +101,10 @@ public class CursoController {
     private ICursoService IcursoService;
 
  @GetMapping ("/curso/mostrar/{id}") // El ID es parte de la URL como variable.
+
    // @ResponseBody - Opcional en una clase anotada con @RestController
-    public CursoTemaDto getCurso (@PathVariable long id) { // Se recupera el valor en la varaible id
-        return IcursoService.getCurso(id); // Se llama al servicio para la lógica y posterior retorno.
+    public CursoTemaDto getCurso (@PathVariable ("id") long idCurso) { // Se recupera el valor en la varaible id
+        return IcursoService.getCurso(idCurso); // Se llama al servicio para la lógica y posterior retorno.
     }
 
 ```
@@ -111,7 +113,7 @@ public class CursoController {
 
 <br/><br/>
 
-#### @RequestParam
+### @RequestParam
 Se usa para extraer parámetros de la consulta (query parameters) directamente desde la URL de la solicitud HTTP. Estos parámetros son los que aparecen después del signo de interrogación (?) en la URL.
 
 **La sintaxis para extraer el param de la URL es: @RequestParam (name = atributo esperado) + Tipo dato + Variable**
