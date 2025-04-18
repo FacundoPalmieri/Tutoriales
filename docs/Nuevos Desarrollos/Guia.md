@@ -482,16 +482,16 @@ En la entidad Uno:
 
 - Un atributo de la otra clase usando **composición.**
 
-- Anotation @ManyToOne(targetEntity = otraClase.class)
+- Anotation @ManyToMany(targetEntity = otraClase.class)
 
 - Anotation @JoinTable
 
 
 ```jsx title="Entidad CLUB"
 @JoinTable(
-    name = "club_competitions",   // 1
-    JoinColumn = @JoinColumn(name = "club"), // 2
-    inverseJoinColumns = @JoinColumn(name= "competition") // 3
+    name = "club_competitions",   // 1 Nombre tabla intermedia
+    joinColumn = @JoinColumn(name = "club"), // 2 Nombre de la columna
+    inverseJoinColumns = @JoinColumn(name= "competition") // 3 Nombre de la columna
 )
 
 ``` 
@@ -677,3 +677,34 @@ Métodos básicos sin necesidad de agregar nada en Respository:
 -   existsById(ID id)
 
 -   count()
+
+
+## --------------------------------------
+
+## DTO
+
+### Validaciones
+
+1. @NotNull
+
+-   Parte de la especificación de validación de Java
+
+-   Verifica que el valor de un atributo no sea null.
+
+-    Usarlo en datos de tipo primitivo.
+
+
+2. @NotEmpty
+
+-   Parte de la especificación de validación de Java.
+
+-   Verifica que un campo no esté vacío. Se aplica específicamente a strings, colecciones o listas. Asegura que el atributo no sea null ni esté vacío (una cadena vacía "" o una lista vacía []).
+
+-   Usado en strings, colecciones, listas.
+
+
+3. @NonNull
+
+-   Similar a @NotNull, pero es parte de Lombok (no es parte de la especificación de validación de Java). @NonNull también asegura que el valor no sea null, pero genera una validación a nivel de código, no directamente en el framework de validación.
+
+-   Verifica valores nulos en tiempo de ejecución.
