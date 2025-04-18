@@ -509,15 +509,17 @@ private List<OtraEntidad> otraEntidad;
 
 🔧 En JPA (Spring Boot):
 
-Usa @Inheritance(strategy = InheritanceType.JOINED)
+Usa @MappedSuperclass
 
--   Es más normalizada, cada tabla representa una sola entidad, y se conecta por id.
+-   Se mapean en la base de datos las clases Hijas con todos los atributos de la clase padre
 
-
+-   No usar @Table ni @Entity ya que no se mapeara a la base de datos.
 ```jsx title="Clase Persona - Padre"
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-public class Persona {
+
+@MappedSuperclass
+@Data
+// NO USAR @Table
+public abstrac class Persona {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -532,6 +534,7 @@ public class Persona {
 
 ```jsx title="Clase Empleado - Hija"
 @Entity
+@Data
 public class Empleado extends Persona {
 
     //Hereda id de persona
