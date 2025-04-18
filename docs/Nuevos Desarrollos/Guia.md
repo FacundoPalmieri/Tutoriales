@@ -493,6 +493,7 @@ En la entidad Uno:
     joinColumn = @JoinColumn(name = "club"), // 2 Nombre de la columna
     inverseJoinColumns = @JoinColumn(name= "competition") // 3 Nombre de la columna
 )
+private List<OtraEntidad> otraEntidad;
 
 ``` 
 1. Nombre tabla intermedia
