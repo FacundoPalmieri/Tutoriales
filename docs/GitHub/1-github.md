@@ -207,16 +207,31 @@ git branch
 git branch -r
 ```
 
-5. Si no existe nuestra rama remota de manera local, debemos crearla.
+5. Nos aseguramos que Git conozca las últimas ramas remotas.
+
+-   Git actualiza su conocimiento sobre el remoto.
+
+-   Se trae las nuevas ramas, commits y referencias que están en origin, incluyendo la nueva rama.
+
+-    NO te crea la rama local automáticamente.
+
+-   Ahora sabés que esa rama remota existe, y podés consultarla o basarte en ella.
+
+```jsx title="Ejemplo"
+git fetch
+``` 
+
+
+<br/>
+
+6. Primero crear localmente el nombre de la rama y luego vincula y hace un pull con la rama remota
 
 ```jsx title="Ejemplo"
 git checkout -b nombre-de-la-rama origin/nombre-de-la-rama
 
-
-primero crear localmente el nombre de la rama y luego vincula y hace un pull con la rama remota
 ```
 
-6. Cambiamos de rama
+7. Cambiamos de rama
 
 ```jsx title="Ejemplo"
 git checkout nombre-de-la-rama

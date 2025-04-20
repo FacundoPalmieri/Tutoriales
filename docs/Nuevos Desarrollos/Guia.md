@@ -509,14 +509,17 @@ private List<OtraEntidad> otraEntidad;
 
 🔧 En JPA (Spring Boot):
 
-Usa @MappedSuperclass
+#### @MappedSuperclass
 
--   Se mapean en la base de datos las clases Hijas con todos los atributos de la clase padre
+-   No se crea una tabla para la clase Padre en la base de datos.
 
--   No usar @Table ni @Entity ya que no se mapeara a la base de datos.
+-   Las clases hijas heredan sus atributos y esos campos van directo en la tabla hija.
+
+-   No se pueden hacer relaciones hacia clase Padre, ni consultas con @Query("from clasePadre").
+
 ```jsx title="Clase Persona - Padre"
 
-@MappedSuperclass
+@MappedSuperclasgit 
 @Data
 // NO USAR @Table
 public abstrac class Persona {
@@ -543,6 +546,35 @@ public class Empleado extends Persona {
 }
 
 ``` 
+
+<br/>
+
+#### @Entity + @Inheritance (Recomendando)
+
+-   Se crea una tabla clase Padre con los campos comunes.
+
+-   Las tablas hijas  tienen los campos propios y una clave foránea hacia Padre.
+
+-   Se pueden hacer consultas y relaciones con Padre.
+
+
+```jsx title="Clase Persona - Padre"
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED) // Crea una tabla para cada entidad.
+@Table(name = "people")
+@Data
+public abstrac class Persona {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String nombre;
+}
+
+``` 
+
 
 ⚠️ IMPORTANTE:
 
