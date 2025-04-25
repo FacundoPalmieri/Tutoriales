@@ -159,6 +159,44 @@ ng serve --open
 ```
 
 
+## Instalación de Bootstrap
+
+1. Instalación con npm
+
+```jsx title="npm"
+npm install bootstrap@5.3.5
+``` 
+
+2. Modificamos el angular.json
+
+Debemos referencia al documento main de stylos de bootstrap en nuestra configuración de angular
+
+![bs-angular](/img/bs-angular.png)
+
+
+3. Reiniciamos el servidor
+
+
+<br/>
+
+
+## Instalación Angular Material
+
+1. Instalamos con npm
+
+```jsx title="Instalación angular material"
+ng add @angular/material
+``` 
+
+- Nos indicará si queremos instalar la versión xxx. Seleccionamos que si
+
+- Luego elegimos la opción "custom" de estilos visuales
+
+- Luego nos preguntará si queremos usar la tipografía de angular material. Seleccionamos que si
+
+
+<br/>
+
 ## Estructura de un proyecto Angular
 
 ```jsx title=""
