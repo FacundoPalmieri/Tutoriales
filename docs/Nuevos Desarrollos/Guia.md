@@ -426,6 +426,33 @@ public class Pais {
 
 <br/>
 
+### Pensar las relaciones
+
+Una pregunta clave que siempre podés hacerte para no marearte:
+
+-   ¿Un solo registro (fila) de esta entidad a cuántos registros de la otra entidad se puede asociar?
+
+-   ¿Y al revés?
+
+Ahora, apliquémoslo bien despacio a tu ejemplo de historia clínica y paciente:
+
+¿Una historia clínica a cuántos pacientes se asocia?
+
+    -   A uno solo. Esa historia clínica es de un paciente específico. ✔️
+
+¿Un paciente puede tener varias historias clínicas (varios registros de MedicalHistory)?
+
+    -   Sí, un paciente puede tener muchas historias clínicas (porque puede tener consultas en distintas fechas). ✔️
+
+
+Entonces la relación correcta es:
+
+Muchos MedicalHistory ➡️ Un Patient
+
+(o dicho más "de base de datos": ManyToOne, como vos pusiste)
+
+<br/>
+
 ### Sintaxis Relación OneToOne
 
 La relación estará del lado de la entidad menos importante o dependiente.
@@ -436,14 +463,18 @@ Agregaremos:
 
 -   Anotation @OneToOne
 
--   Propiedad (targetEntity = UserSec.Class) para establecer con que clase se hará la relación.
+-   Propiedad (fetch = FetchType.LAZY, targetEntity = UserSec.Class) para establecer:
+
+    - Carga perezosa
+
+    - Clase se hará la relación.
 
 -   Ver si corresponde agregar propiedad "cascade = CascadeType.xxx" para establecer comportamiento en cascada. Es decir, cualquier acción de insertar, eliminar, actualizar, etc impactará en la tabla relacionada.
 
 - Utilizamos la annotation @JoinColumn para establecer el nombre en la columna unión.
 
 ```jsx title="Entidad Refresh"
-@OneToOne
+@OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)  // FK en RefreshToken
     private UserSec user;
 ``` 
@@ -456,12 +487,12 @@ En la entidad Muchos:
 
 - Un atributo de la otra clase usando **composición.**
 
-- Anotation @ManyToOne(targetEntity = otraClase.class): Especifica la entidad destino de la relación.
+- Anotation @ManyToOne(fetch = FetchType.LAZY, targetEntity = otraClase.class): Especifica la entidad destino de la relación.
 
 - Utilizamos la annotation @JoinColumn: Establece el nombre en la columna unión.
 
 ```jsx title="Entidad MUCHOS"
-@ManyToOne(targetEntity = NombreClaseEntidadUno.class) // Curso.class
+@ManyToOne(fetch = FetchType.LAZY, targetEntity = NombreClaseEntidadUno.class) // Curso.class
 @JoinColumn(name = "curso_id")
 private Curso curso;
 
@@ -714,6 +745,30 @@ Métodos básicos sin necesidad de agregar nada en Respository:
 
 -   count()
 
+
+
+### @EntityGraph
+
+@EntityGraph es una anotación que permite, de manera más limpia y declarativa, indicar qué asociaciones deben ser cargadas junto con la entidad principal.
+
+```jsx title=""
+@EntityGraph(attributePaths = {"details"})
+List<Consultation> findByPatientId(Long patientId);
+``` 
+
+
+### JoinFetch
+
+Es una cláusula de JPQL que permite definir manualmente la consulta y especificar qué asociaciones deben ser cargadas junto con la entidad principal.
+
+Se utiliza cuando se necesita más control sobre la consulta, por ejemplo, para aplicar filtros adicionales, ordenamientos o combinaciones de joins personalizados.
+
+
+
+```jsx title=""
+@Query("SELECT c FROM Consultation c JOIN FETCH c.details WHERE c.patient.id = :patientId")
+List<Consultation> findWithDetailsByPatientId(@Param("patientId") Long patientId);
+``` 
 
 ## --------------------------------------
 

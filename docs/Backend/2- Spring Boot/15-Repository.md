@@ -123,3 +123,112 @@ La anotación @Param("expiration") le indica a Spring que el valor de la variabl
 
 
 **-  Long expiration**: Este es el parámetro del método update. El valor de expiration es el que se pasará cuando se llame a este método y será usado en la consulta para actualizar el valor de la columna expiration en la base de datos. El tipo de Long es porque el valor que estamos pasando es un número que generalmente representa una cantidad de milisegundos, como el tiempo de expiración de un token.
+
+
+
+## @EntityGraph / Join Fetch
+
+
+Estas funcionalidades permiten traer, en una sola consulta a la base de datos, toda la información necesaria cuando intervienen más de una entidad relacionada.
+
+
+#### EntityGraph:
+
+@EntityGraph es una anotación que permite, de manera más limpia y declarativa, indicar qué asociaciones deben ser cargadas junto con la entidad principal.
+
+-   Facilita consultas simples sin necesidad de escribir JPQL manual.
+
+-   Permite reutilización, ya que puede aplicarse a distintos métodos de repositorio.
+
+-   Se integra con las búsquedas derivadas por nombre de método, siempre que sigan las convenciones de JPA.
+
+```jsx title=""
+@EntityGraph(attributePaths = {"details"})
+List<Consultation> findByPatientId(Long patientId);
+``` 
+
+#### ¿Qué hace esto exactamente?
+
+**findByPatientId(Long patientId) es un query derivado:** JPA automáticamente genera un SELECT buscando todas las Consultation que tengan el patientId que vos pases.
+
+El @EntityGraph(attributePaths = {"details"}) le dice a JPA:
+
+"Además de traerme la Consultation, cargame también su propiedad details en la misma consulta."
+
+En resumen:
+
+-   Va a traer todas las Consultations cuyo paciente sea patientId.
+
+-   Cada Consultation va a venir ya con su lista details cargada (sin necesidad de hacer otro query después).
+
+### ¿Qué evitás con eso?
+
+Sin EntityGraph, JPA haría:
+
+Un SELECT * FROM consultation WHERE patient_id = ?
+
+Y luego, por cada Consultation, un SELECT * FROM details WHERE consultation_id = ?
+
+Eso sería el famoso problema de N+1 queries ❌.
+
+Con EntityGraph, JPA internamente optimiza para traer todo en un solo golpe.
+
+<br/>
+
+#### JOIN FETCH:
+
+Es una cláusula de JPQL que permite definir manualmente la consulta y especificar qué asociaciones deben ser cargadas junto con la entidad principal.
+
+Se utiliza cuando se necesita más control sobre la consulta, por ejemplo, para aplicar filtros adicionales, ordenamientos o combinaciones de joins personalizados.
+
+
+
+```jsx title=""
+@Query("SELECT c FROM Consultation c JOIN FETCH c.details WHERE c.patient.id = :patientId")
+List<Consultation> findWithDetailsByPatientId(@Param("patientId") Long patientId);
+``` 
+
+
+### ¿Por qué NO conviene usar bidireccionalidad?
+
+**Mayor acoplamiento:** Las dos entidades quedan fuertemente ligadas. Si una cambia, afecta a la otra.
+
+**Complejidad de mantenimiento:** Es más difícil razonar sobre el flujo de datos. Tenés que sincronizar ambos lados manualmente (addConsulta, removeConsulta).
+
+**Más riesgo de errores:** Es fácil olvidarse de setear los dos lados de la relación, causando datos inconsistentes en memoria.
+
+**Carga innecesaria:** Si olvidás poner LAZY, podrías cargar automáticamente listas enteras de objetos que ni querías usar.
+
+**Problemas de serialización:** Si no manejás bien (con DTO o anotaciones como @JsonIgnore), podés provocar ciclos infinitos (StackOverflowError) al querer convertir a JSON. Por ejemplo: Cuando tienes una relación bidireccional (por ejemplo, un Paciente tiene muchas Consultas, y una Consulta tiene un Paciente asociado), se genera una referencia circular entre las dos entidades.
+
+**N+1 Problem:** Si la colección no se maneja bien (p. ej., paciente.getConsultas()), podés disparar cientos de queries innecesarias a la base. Ej: si quiero obtener el listado de 10 pacientes, Hibernate hace:
+
+    -   1 consulta para obtener los pacientes.
+
+    -   10 consultas adicionales para obtener las consultas de cada paciente.
+
+#### ¿Por qué UNIDIRECCIONAL + EntityGraph / JoinFetch es más performante y recomendable?
+Control total de lo que cargás: Solo traés datos relacionados cuando los necesitás.
+
+Consultas optimizadas: Se genera una única query SQL con JOIN explícito.
+
+Mejor rendimiento: Evitás el overhead de carga automática de colecciones.
+
+Código más simple y predecible: Sabés exactamente qué entidad depende de qué.
+
+DTOs más claros: Solo exponés lo que querés, sin miedo a ciclos o sobrecarga de datos.
+
+Evita LazyInitializationException: Porque pedís los datos asociados en el mismo momento que consultás.
+
+Fácil de mantener y extender: Tu modelo de datos es modular, cada entidad sabe "lo mínimo necesario".
+
+🎯 Entonces, ¿lo que dijiste es correcto?
+✅ Sí, lo que planteaste es absolutamente correcto:
+
+Es más recomendable trabajar con relaciones unidireccionales y controlar la carga de datos usando EntityGraph o JoinFetch cuando hace falta.
+
+🧠 Pequeño resumen final:
+Bidireccionalidad: Solo cuando realmente la necesites y estés seguro de manejar bien la sincronización.
+
+Unidireccionalidad: Ideal para aplicaciones modernas, orientadas a performance y claridad (como la tuya).
+
