@@ -623,11 +623,12 @@ public abstrac class Persona {
 ## Controller
 1. Colocar @RestController
 2. Colocar ruta de controller
-3. Que tipo de método? get, post? y ruta
-4. Que tipo de autorización requiere.
-5. Que tipo de respuesta necesito dar?
-6. Que dato necesito recibir y validaciones de entrada debe tener
-7. Realizar la documentación.
+3. Colocar @PreAuthorize("denyAll()")
+4. Que tipo de método? get, post? y ruta
+5. Que tipo de autorización requiere.
+6. Que tipo de respuesta necesito dar?
+7. Que dato necesito recibir y validaciones de entrada debe tener
+8. Realizar la documentación.
 
 
 ```jsx title="Ejemplo completo"
@@ -652,9 +653,8 @@ public abstrac class Persona {
  */
 @RestController
 @RequestMapping("/api/user")
+@PreAuthorize("denyAll()")
 public class UserController {
-    @Autowired
-    private UserRolesConfig userRolesConfig;
 
     @Autowired
     private IUserService userService;
@@ -680,7 +680,8 @@ public class UserController {
             @ApiResponse(responseCode = "403", description = "No autorizado para acceder a este recurso."),
     })
     @GetMapping("/all")
-    @PreAuthorize("hasAnyRole(@userRolesConfig.desarrolladorRole,@userRolesConfig.administradorRole)")
+    @PreAuthorize("hasAnyRole(T(com.odontologiaintegralfm.enums.UserRole).Desarrollador.name()," +
+                             "T(com.odontologiaintegralfm.enums.UserRole).Administrador.name())")
     public ResponseEntity<Response<List<UserSecResponseDTO>>> getAllUsers() {
         Response<List<UserSecResponseDTO>> response = userService.getAll();
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -712,8 +713,9 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado.")
     })
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole(@userRolesConfig.desarrolladorRole,@userRolesConfig.administradorRole)")
-    public ResponseEntity<Response<UserSecResponseDTO>> getUserById(@PathVariable("id") Long id) {
+    @PreAuthorize("hasAnyRole(T(com.odontologiaintegralfm.enums.UserRole).Desarrollador.name()," +
+                             "T(com.odontologiaintegralfm.enums.UserRole).Administrador.name())")
+    public ResponseEntity<Response<UserSecResponseDTO>> getUserById(@PathVariable Long id) {
         Response<UserSecResponseDTO>response = userService.getById(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
 
@@ -756,7 +758,8 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "Usuario existente en el sistema.")
     })
     @PostMapping
-    @PreAuthorize("hasAnyRole(@userRolesConfig.desarrolladorRole,@userRolesConfig.administradorRole)")
+    @PreAuthorize("hasAnyRole(T(com.odontologiaintegralfm.enums.UserRole).Desarrollador.name()," +
+                             "T(com.odontologiaintegralfm.enums.UserRole).Administrador.name())")
     public  ResponseEntity<Response<UserSecResponseDTO>> createUser(@Valid @RequestBody UserSecCreateDTO userSecCreateDto) {
         Response<UserSecResponseDTO>response = userService.save(userSecCreateDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -793,12 +796,15 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "Usuario existente en el sistema o se intenta actualizar a un rol DEV.")
     })
     @PatchMapping
-    @PreAuthorize("hasAnyRole(@userRolesConfig.desarrolladorRole,@userRolesConfig.administradorRole)")
+    @PreAuthorize("hasAnyRole(T(com.odontologiaintegralfm.enums.UserRole).Desarrollador.name()," +
+                             "T(com.odontologiaintegralfm.enums.UserRole).Administrador.name())")
     public ResponseEntity<Response<UserSecResponseDTO>> updateUser(@Valid @RequestBody UserSecUpdateDTO userSecUpdateDto) {
        Response<UserSecResponseDTO> response =  userService.update(userSecUpdateDto);
        return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
+    
+}
 
 ```
 
