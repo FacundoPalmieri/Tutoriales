@@ -631,7 +631,7 @@ public abstrac class Persona {
 8. Realizar la documentación.
 
 
-```jsx title="Ejemplo completo"
+```jsx title="Ejemplo Encabezado "
 /**
  * Controlador encargado de gestionar los usuarios en el sistema. Proporciona operaciones para obtener
  * el listado de usuarios, obtener un usuario específico por su ID y crear nuevos usuarios.
@@ -659,11 +659,47 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
+``` 
+
+```jsx title="Crear"
+/**
+     * Crea un nuevo usuario en el sistema.
+     * <p>
+     * Requiere el rol <b>ADMIN</b> para acceder.
+     * </p>
+     *
+     * @param userSecCreateDto Datos del usuario a crear.
+     * @return ResponseEntity con:
+     *         <ul>
+     *         <li><b>201 Created</b>: Usuario creado exitosamente.</li>
+     *         <li><b>401 Unauthorized</b>: No autenticado.</li>
+     *         <li><b>403 Forbidden</b>: No autorizado para acceder a este recurso.</li>
+     *         <li><b>404 Not Found</b>: Roles y/o permisos requeridos no encontrados.</li>
+     *         <li><b>409 Conflict</b>: Usuario existente en el sistema.</li>
+     *         </ul>
+     */
+
+    @Operation(summary = "Crear usuario", description = "Crea un nuevo usuario en el sistema.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Usuario Creado exitosamente."),
+            @ApiResponse(responseCode = "401", description = "No autenticado."),
+            @ApiResponse(responseCode = "403", description = "No autorizado para acceder a este recurso."),
+            @ApiResponse(responseCode = "404", description = "Roles y/o permisos requeridos no encontrados."),
+            @ApiResponse(responseCode = "409", description = "Usuario existente en el sistema.")
+    })
+    @PostMapping
+    @PreAuthorize("hasAnyRole(T(com.odontologiaintegralfm.enums.UserRole).Desarrollador.name()," +
+                             "T(com.odontologiaintegralfm.enums.UserRole).Administrador.name())")
+    public  ResponseEntity<Response<UserSecResponseDTO>> createUser(@Valid @RequestBody UserSecCreateDTO userSecCreateDto) {
+        Response<UserSecResponseDTO>response = userService.save(userSecCreateDto);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+``` 
 
 
-
-
-    /**
+```jsx title="Obtener todos"
+ /**
      * Lista todos los usuarios.
      * <p>Requiere rol <b>ADMIN</b> para acceder.</p>
      * @return ResponseEntity con:
@@ -686,8 +722,11 @@ public class UserController {
         Response<List<UserSecResponseDTO>> response = userService.getAll();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+``` 
 
+   
 
+```jsx title="Obtener por ID"
 
     /**
      /**
@@ -721,56 +760,13 @@ public class UserController {
 
     }
 
+``` 
 
 
 
 
 
-
-
-
-
-
-
-    /**
-     * Crea un nuevo usuario en el sistema.
-     * <p>
-     * Requiere el rol <b>ADMIN</b> para acceder.
-     * </p>
-     *
-     * @param userSecCreateDto Datos del usuario a crear.
-     * @return ResponseEntity con:
-     *         <ul>
-     *         <li><b>201 Created</b>: Usuario creado exitosamente.</li>
-     *         <li><b>401 Unauthorized</b>: No autenticado.</li>
-     *         <li><b>403 Forbidden</b>: No autorizado para acceder a este recurso.</li>
-     *         <li><b>404 Not Found</b>: Roles y/o permisos requeridos no encontrados.</li>
-     *         <li><b>409 Conflict</b>: Usuario existente en el sistema.</li>
-     *         </ul>
-     */
-
-    @Operation(summary = "Crear usuario", description = "Crea un nuevo usuario en el sistema.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Usuario Creado exitosamente."),
-            @ApiResponse(responseCode = "401", description = "No autenticado."),
-            @ApiResponse(responseCode = "403", description = "No autorizado para acceder a este recurso."),
-            @ApiResponse(responseCode = "404", description = "Roles y/o permisos requeridos no encontrados."),
-            @ApiResponse(responseCode = "409", description = "Usuario existente en el sistema.")
-    })
-    @PostMapping
-    @PreAuthorize("hasAnyRole(T(com.odontologiaintegralfm.enums.UserRole).Desarrollador.name()," +
-                             "T(com.odontologiaintegralfm.enums.UserRole).Administrador.name())")
-    public  ResponseEntity<Response<UserSecResponseDTO>> createUser(@Valid @RequestBody UserSecCreateDTO userSecCreateDto) {
-        Response<UserSecResponseDTO>response = userService.save(userSecCreateDto);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
-
-
-
-
-
-
-
+```jsx title="Actualizar "
 
 
     /**
@@ -803,10 +799,10 @@ public class UserController {
        return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
-    
-}
+``` 
 
-```
+
+
 
 
 
