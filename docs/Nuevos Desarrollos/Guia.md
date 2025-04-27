@@ -623,11 +623,112 @@ public abstrac class Persona {
 ## Controller
 1. Colocar @RestController
 2. Colocar ruta de controller
+3. Que tipo de método? get, post? y ruta
+4. Que tipo de autorización requiere.
+5. Que tipo de respuesta necesito dar?
+6. Que dato necesito recibir y validaciones de entrada debe tener
+7. Realizar la documentación.
 
-```jsx title="Ejemplo "
+
+```jsx title="Ejemplo completo"
+/**
+ * Controlador encargado de gestionar los usuarios en el sistema. Proporciona operaciones para obtener
+ * el listado de usuarios, obtener un usuario específico por su ID y crear nuevos usuarios.
+ * <p>
+ * Este controlador requiere el rol <b>ADMIN</b> para acceder a sus métodos.
+ * </p>
+ * <p>
+ * Los métodos disponibles son:
+ * <ul>
+ *   <li><b>GET /api/user/all</b>: Obtiene el listado completo de usuarios.</li>
+ *   <li><b>GET /api/user/{id}</b>: Obtiene un usuario específico por su ID.</li>
+ *   <li><b>POST /api/user/</b>: Crea un nuevo usuario en el sistema.</li>
+ *   <li><b>PATCH /api/user/</b>: Actualiza un usuario en el sistema.</li>
+ * </ul>
+ * </p>
+ * <p>
+ * <b>Roles necesarios:</b> <b>ADMIN</b>
+ * </p>
+ */
 @RestController
-@RequestMapping("/api/user") <--------------------------------
+@RequestMapping("/api/user")
 public class UserController {
+    @Autowired
+    private UserRolesConfig userRolesConfig;
+
+    @Autowired
+    private IUserService userService;
+
+
+
+
+
+    /**
+     * Lista todos los usuarios.
+     * <p>Requiere rol <b>ADMIN</b> para acceder.</p>
+     * @return ResponseEntity con:
+     * <ul>
+     *     <li><b>200 OK</b> Lista de usuarios recuperada exitosamente.</li>
+     *     <li><b>401 Unauthorized</b>: No autenticado.</li>
+     *     <li><b>403 Forbidden</b>: No autorizado para acceder a este recurso.</li>
+     * </ul>
+     */
+    @Operation(summary = "Obtener listado de usuarios", description = "Lista todos los usuarios.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Usuarios Encontrados."),
+            @ApiResponse(responseCode = "401", description = "No autenticado."),
+            @ApiResponse(responseCode = "403", description = "No autorizado para acceder a este recurso."),
+    })
+    @GetMapping("/all")
+    @PreAuthorize("hasAnyRole(@userRolesConfig.desarrolladorRole,@userRolesConfig.administradorRole)")
+    public ResponseEntity<Response<List<UserSecResponseDTO>>> getAllUsers() {
+        Response<List<UserSecResponseDTO>> response = userService.getAll();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+
+    /**
+     /**
+     * Obtiene un usuario por su ID.
+     * <p>
+     * Requiere el rol <b>ADMIN</b> para acceder.
+     * </p>
+     *
+     * @param id ID del usuario a buscar.
+     * @return ResponseEntity con:
+     *         <ul>
+     *         <li><b>200 OK</b>: Usuario encontrado exitosamente.</li>
+     *         <li><b>401 Unauthorized</b>: No autenticado.</li>
+     *         <li><b>403 Forbidden</b>: No autorizado para acceder a este recurso.</li>
+     *         <li><b>404 Not Found</b>: Usuario no encontrado.</li>
+     *         </ul>
+     */
+    @Operation(summary = "Obtener usuario", description = "Obtiene un usuario por su ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado exitosamente."),
+            @ApiResponse(responseCode = "401", description = "No autenticado."),
+            @ApiResponse(responseCode = "403", description = "No autorizado para acceder a este recurso."),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado.")
+    })
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole(@userRolesConfig.desarrolladorRole,@userRolesConfig.administradorRole)")
+    public ResponseEntity<Response<UserSecResponseDTO>> getUserById(@PathVariable("id") Long id) {
+        Response<UserSecResponseDTO>response = userService.getById(id);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Crea un nuevo usuario en el sistema.
@@ -654,67 +755,52 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Roles y/o permisos requeridos no encontrados."),
             @ApiResponse(responseCode = "409", description = "Usuario existente en el sistema.")
     })
- 
-    @PostMapping // Crear un usuario <--------------------------------
-    @PreAuthorize("hasAnyRole(@userRolesConfig.administradorRole," +
-            "                 @userRolesConfig.secretariaRole)")
-    public ResponseEntity<Response<UserSecResponseDTO>> createUser(@Valid @RequestBody User user) {
+    @PostMapping
+    @PreAuthorize("hasAnyRole(@userRolesConfig.desarrolladorRole,@userRolesConfig.administradorRole)")
+    public  ResponseEntity<Response<UserSecResponseDTO>> createUser(@Valid @RequestBody UserSecCreateDTO userSecCreateDto) {
         Response<UserSecResponseDTO>response = userService.save(userSecCreateDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
 
 
-    // Eliminar un usuario por ID  <--------------------------------
-    @DeleteMapping("/{id}") 
-    public ResponseEntity<Void> deleteUser(@Valid @PathVariable Long id) {
-        // Implementación
-    }
 
-    // Actualizar parcial un usuario  <--------------------------------
-    @PatchMapping  
-    public ResponseEntity<User> updateUser(@Valid @PathVariable Long id, @RequestBody User user) {
-        // Implementación
-    }
 
-    // Buscar un usuario por ID  <--------------------------------
-    @GetMapping("/{id}")  
-    public ResponseEntity<User> getUserById(@NotNull @PathVariable ("id") Long idObjeto) {
-        // Implementación
-    }
 
-    // Obtener todos los usuarios  <--------------------------------
-    @GetMapping ("/all") 
-    public ResponseEntity<List<User>> getAllUsers() {
-        // Implementación
+
+
+
+    /**
+     * Actualiza la información de un usuario.
+     * Este endpoint permite a los usuarios con rol de "ADMIN" actualizar los datos de un usuario existente.
+     * @param userSecUpdateDto Objeto que contiene los datos del usuario a actualizar. Debe ser válido según las
+     * restricciones de la clase {@link UserSecUpdateDTO}.
+     * @return ResponseEntity con:
+     *         <ul>
+     *         <li><b>200 OK</b>: Usuario actualizado exitosamente.</li>
+     *         <li><b>401 Unauthorized</b>: No autenticado.</li>
+     *         <li><b>403 Forbidden</b>: No autorizado para acceder a este recurso.</li>
+     *         <li><b>404 Not Found</b>: Roles y/o permisos requeridos no encontrados.</li>
+     *         <li><b>409 Conflict</b>: Usuario existente en el sistema o se intenta actualizar a un rol DEV.</li>
+     *         </ul>
+     */
+    @Operation(summary = "Actualizar usuario", description = "Actualizar un usuario en el sistema.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Usuario Actualizado exitosamente."),
+            @ApiResponse(responseCode = "401", description = "No autenticado."),
+            @ApiResponse(responseCode = "403", description = "No autorizado para acceder a este recurso."),
+            @ApiResponse(responseCode = "404", description = "Roles y/o permisos requeridos no encontrados."),
+            @ApiResponse(responseCode = "409", description = "Usuario existente en el sistema o se intenta actualizar a un rol DEV.")
+    })
+    @PatchMapping
+    @PreAuthorize("hasAnyRole(@userRolesConfig.desarrolladorRole,@userRolesConfig.administradorRole)")
+    public ResponseEntity<Response<UserSecResponseDTO>> updateUser(@Valid @RequestBody UserSecUpdateDTO userSecUpdateDto) {
+       Response<UserSecResponseDTO> response =  userService.update(userSecUpdateDto);
+       return new ResponseEntity<>(response, HttpStatus.OK);
+
     }
-}
 
 ```
-
-
-3. Que tipo de método? get, post? y ruta
-4. Que tipo de autorización requiere.
-5. Que tipo de respuesta necesito dar?
-6. Que dato necesito recibir y validaciones de entrada debe tener
-7. Realizar la documentación.
-
-
-### Path Variable
-
-```jsx title=""
- @GetMapping("/localities/{id}")
-    @PreAuthorize("hasAnyRole(@userRolesConfig.administradorRole," +
-            "                 @userRolesConfig.secretariaRole)")
-    public ResponseEntity<Response<List<LocalityResponseDTO>>> getLocalitiesByIdProvinces(@NotNull @PathVariable("id") Long idProvinces) {
-        Response<List<LocalityResponseDTO>>response = geoService.getLocalitiesByIdProvinces(idProvinces);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-``` 
-
-
-
-
 
 
 
