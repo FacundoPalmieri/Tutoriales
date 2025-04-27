@@ -629,11 +629,41 @@ public abstrac class Persona {
 @RequestMapping("/api/user") <--------------------------------
 public class UserController {
 
-    // Crear un usuario <--------------------------------
-    @PostMapping    
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-        // Implementación
+    /**
+     * Crea un nuevo usuario en el sistema.
+     * <p>
+     * Requiere el rol <b>ADMIN</b> para acceder.
+     * </p>
+     *
+     * @param userSecCreateDto Datos del usuario a crear.
+     * @return ResponseEntity con:
+     *         <ul>
+     *         <li><b>201 Created</b>: Usuario creado exitosamente.</li>
+     *         <li><b>401 Unauthorized</b>: No autenticado.</li>
+     *         <li><b>403 Forbidden</b>: No autorizado para acceder a este recurso.</li>
+     *         <li><b>404 Not Found</b>: Roles y/o permisos requeridos no encontrados.</li>
+     *         <li><b>409 Conflict</b>: Usuario existente en el sistema.</li>
+     *         </ul>
+     */
+
+    @Operation(summary = "Crear usuario", description = "Crea un nuevo usuario en el sistema.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Usuario Creado exitosamente."),
+            @ApiResponse(responseCode = "401", description = "No autenticado."),
+            @ApiResponse(responseCode = "403", description = "No autorizado para acceder a este recurso."),
+            @ApiResponse(responseCode = "404", description = "Roles y/o permisos requeridos no encontrados."),
+            @ApiResponse(responseCode = "409", description = "Usuario existente en el sistema.")
+    })
+ 
+    @PostMapping // Crear un usuario <--------------------------------
+    @PreAuthorize("hasAnyRole(@userRolesConfig.administradorRole," +
+            "                 @userRolesConfig.secretariaRole)")
+    public ResponseEntity<Response<UserSecResponseDTO>> createUser(@Valid @RequestBody User user) {
+        Response<UserSecResponseDTO>response = userService.save(userSecCreateDto);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+
 
     // Eliminar un usuario por ID  <--------------------------------
     @DeleteMapping("/{id}") 
@@ -682,6 +712,12 @@ public class UserController {
     }
 ``` 
 
+
+
+
+
+
+
 ## --------------------------------------
 
 ## Service
@@ -720,7 +756,7 @@ Crear uno por cada entidad. En algunos casos podría hacerse un solo service (ej
 
 1. Poner annotation @Repository
 
-2. Implementa JpaRepository < NombreEntidad, TipoDatoId >
+2. Extiende(hereda) JpaRepository < NombreEntidad, TipoDatoId >
 
 ```jsx title=""
 @Repository
@@ -778,24 +814,40 @@ List<Consultation> findWithDetailsByPatientId(@Param("patientId") Long patientId
 
 1. @NotNull
 
--   Parte de la especificación de validación de Java
+-   Parte de la especificación de validación de Java.
 
--   Verifica que el valor de un atributo no sea null.
+-   Verifica que el valor de un atributo no sea null, es decir que exista **pero podría estar vacío.**
 
--    Usarlo en datos de tipo primitivo.
+**Aplicar a: tipos de datos objeto (Long, Integer, Double, LocalDate, List, Set, etc.).**
 
 
 2. @NotEmpty
 
 -   Parte de la especificación de validación de Java.
 
--   Verifica que un campo no esté vacío. Se aplica específicamente a strings, colecciones o listas. Asegura que el atributo no sea null ni esté vacío (una cadena vacía "" o una lista vacía []).
+-   Verifica que un campo no esté null ni esté vacío (cadena vacía "", lista vacía [], mapa vacío {}).
 
--   Usado en strings, colecciones, listas.
+-   No chequea si hay solo espacios (eso es @NotBlank).
+
+**Aplicar a: String, List, Set, Map, Array.**
 
 
-3. @NonNull
+3. @NotBlank
+
+-   Parte de la especificación de validación de Java.
+
+-   Verifica que el valor no sea null, no esté vacío "", y no contenga solo espacios en blanco (" ").
+
+-   Es más estricto que @NotEmpty, porque también revisa los espacios.
+
+**Aplicar a: únicamente en String.**
+
+
+
+4. @NonNull
 
 -   Similar a @NotNull, pero es parte de Lombok (no es parte de la especificación de validación de Java). @NonNull también asegura que el valor no sea null, pero genera una validación a nivel de código, no directamente en el framework de validación.
 
 -   Verifica valores nulos en tiempo de ejecución.
+
+![validaciones](/img/validaciones.png)

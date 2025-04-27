@@ -128,7 +128,7 @@ Con el comando **git checkout nombre-de-la-rama** podremos crear una nueva rama.
 
 ### *Unificar Ramas (merge)*
 
-Para realizar el merge debemos primero estar parados en la rama que queremos actualizar (Main) luego usaremos el comando **git merge nombre-de-la-rama-secundaria**.
+Para realizar el merge debemos primero estar parados en la rama que queremos actualizar, luego usaremos el comando **git merge nombre-de-la-rama-secundaria**.
 
 #### Desde la rama principal, llamamos a la rama secundaria. 
 
@@ -138,7 +138,12 @@ Para realizar el merge debemos primero estar parados en la rama que queremos act
 ```jsx title="Ejemplo"
 git checkout main // Para ubicarnos en la rama principal
 
-git merge mi-rama // unificas los cambios de la rama “mi-rama” con la Principal
+git fetch // Traete la última versión de todo lo que está en GitHub
+
+/* ----------------------------------------------------------------------------------------------*/
+git merge mi-rama //(RAMAS LOCALES) unificas los cambios de la rama “mi-rama” con la Principal
+
+git merge origin/mi-rama //(RAMAS REMOTAS) unificas los cambios de la rama “mi-rama” con la Principal
 
 ```
 
