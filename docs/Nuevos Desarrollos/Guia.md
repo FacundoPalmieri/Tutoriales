@@ -94,10 +94,14 @@ Cuando el cliente envía una solicitud posterior con el token JWT, la cadena de 
 
     -   Extrae el token JWT del encabezado Authorization de la solicitud HTTP.
     -   Verifica la validez del token: Se valida que el token no haya expirado y que su firma sea válida utilizando la clave secreta y el algoritmo HMAC256.
+
+**JWT es válido:** 
     -   Extrae la información del token: Una vez validado, se extraen los datos contenidos en el token, como el nombre de usuario y las autoridades. Estos datos se utilizan para autenticar al usuario y otorgar acceso a los recursos solicitados.
     -   Si el token es válido, la autenticación se completa con éxito y Spring Security configura el contexto de seguridad para la solicitud posterior.
 
-6. **Renovación del JWT con Refresh Token**: Si el JWT expira, el método refreshToken() permite renovar el JWT utilizando el refresh token.
+**JWT está expirado:** 
+
+    -   Si el JWT expira, el método refreshToken() permite renovar el JWT utilizando el refresh token.
     -   Se valida el refresh token, se elimina el antiguo y se genera uno nuevo.
     -   Se genera un nuevo JWT y se devuelve al usuario junto con el nuevo refresh token.
 
