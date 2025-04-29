@@ -540,7 +540,7 @@ public class Club {
 3. Colocamos la annotation
 
     ```jsx title="Ejemplo"
-    @ManyToOne(targetEntity = FootballAssociation.Class)
+    @ManyToMany(targetEntity = FootballAssociation.Class)
     ```
 
  
@@ -560,7 +560,7 @@ public class Club {
     private List<Player> players;
 
 
-    @ManyToOne(targetEntity = FootballCompetition.Class, fetch = FetchType.LAZY)   // PASO 3
+    @ManyToMany(targetEntity = FootballCompetition.Class, fetch = FetchType.LAZY)   // PASO 3
  
     private List <FootballCompetition>  FootballCompetition                      // PASO 2
 
@@ -603,7 +603,7 @@ public class Club {
     private List<Player> players;
 
 
-    @ManyToOne(targetEntity = FootballCompetition.Class, fetch = FetchType.LAZY)   // PASO 3
+    @ManyToMany(targetEntity = FootballCompetition.Class, fetch = FetchType.LAZY)   // PASO 3
     @JoinTable(                                                                    // PASO 4
         name = "club_competitions",
         JoinColumn = @JoinColumn(name = "club"),
