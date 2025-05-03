@@ -202,6 +202,62 @@ Si la autenticación es exitosa, en el método **loginUser** se realiza las sigu
 
 - Se devuelve al cliente un objeto authResponseDTO, con detalles del usuario autenticado.
 
+## --------------------------------------
+
+## CORS  (Cross-Origin Resource Sharing)
+
+Es un mecanismo de seguridad implementado por los navegadores para restringir solicitudes HTTP entre diferentes orígenes (diferente dominio, puerto o protocolo).
+
+Por defecto, los navegadores bloquean las solicitudes hechas desde un origen distinto al del servidor que responde. Esto impide que, por ejemplo, una aplicación web alojada en http://frontend.com haga peticiones a http://api.backend.com sin la autorización explícita del backend.
+
+### ¿Cómo funciona CORS?
+
+Cuando el frontend intenta hacer una petición a otro dominio (cross-origin request), el navegador envía una solicitud preflight (OPTIONS) al servidor para preguntar si permite la comunicación.
+
+El backend debe responder con los encabezados adecuados para permitir la solicitud, como:
+
+**Access-Control-Allow-Origin: http://frontend.com** → Permite solicitudes desde ese origen.
+
+**Access-Control-Allow-Methods: GET, POST, PUT, DELETE** → Define qué métodos están permitidos.
+
+**Access-Control-Allow-Headers: Content-Type, Authorization** → Indica qué encabezados personalizados pueden enviarse.
+
+Si el backend no responde con estos encabezados, el navegador bloquea la solicitud y lanza un error de CORS en la consola.
+
+### ¿Cómo solucionar errores de CORS?
+
+Configurando CORS en el backend:
+
+En Spring Boot, puedes usar @CrossOrigin en los controladores o configurar un filtro global.
+En Express (Node.js), puedes usar el paquete cors.
+Proxy en desarrollo: Configurar un proxy en el frontend para evitar el problema (Ej: en Angular con proxy.conf.json).
+
+CORS en APIs públicas: Algunas APIs permiten CORS agregando * en Access-Control-Allow-Origin, pero esto es inseguro.
+
+------------------------------------------------------------
+
+## Certificado SSL (Secure Sockets Layer)
+
+Un certificado SSL (Secure Sockets Layer) sirve para cifrar la comunicación entre el navegador del usuario y el servidor web, asegurando que los datos enviados y recibidos no puedan ser interceptados ni modificados por terceros.
+
+#### ¿Por qué es importante el SSL?
+
+**Cifrado 🔒:** Protege información sensible como contraseñas, datos personales y tarjetas de crédito.
+
+**Autenticación ✅:** Garantiza que el usuario se está conectando al servidor correcto y no a un sitio fraudulento.
+
+**Confianza 🏆:** Los navegadores muestran un candado en la barra de direcciones cuando un sitio usa SSL, lo que da confianza a los visitantes.
+
+**SEO 📈:** Google favorece en los resultados de búsqueda a los sitios con SSL habilitado (HTTPS).
+
+Hoy en día, el protocolo SSL ha sido reemplazado por TLS (Transport Layer Security), que es una versión más segura, pero aún se le sigue llamando SSL de manera común.
+
+<br/>
+
+
+
+
+
 
 ## --------------------------------------
 
@@ -254,6 +310,82 @@ message.setSubject("Asunto del correo");
 message.setText("Contenido del correo");
 
 ``` 
+
+
+
+## --------------------------------------
+
+
+## @Audited
+
+@Audited es una anotación que ofrece Hibernate Envers para registrar automáticamente los cambios históricos de una entidad en la base de datos. Cada vez que se crea, actualiza o elimina una entidad, se guarda una copia del estado anterior en una tabla de auditoría.
+
+Así, podés consultar el "historial" de una entidad, como si fuera un sistema de versiones.
+
+### Requisitos previos
+
+-   Tener una app Spring Boot con JPA y una base de datos configurada (H2, PostgreSQL, MySQL, etc.)
+
+-   Usar Hibernate como proveedor JPA (es el default en Spring Boot)
+
+### Paso 1: Agregar la dependencia de Hibernate Envers
+```jsx title="POM.xml"
+	<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>6.4.4.Final</version>
+		</dependency>
+
+
+		<!--Dependencia para generar tablas de auditoría ante cambios de persistencia -->
+		<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-envers</artifactId>
+			<version>6.4.4.Final</version>
+		</dependency>
+
+``` 
+
+### Paso 2: Anotar las entidades con @Audited
+
+En la entidad a auditar debemos:
+
+-   Colocar @Audited como anotación de la entidad
+
+En caso que querramos excluir algún atributo podremos hacerlo de la siguiente manera:
+
+-    @NotAudited : Para campo simples
+
+-   @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED) : Para campos donde existan relaciones (Ej: @ManyToOne)
+
+En el caso que un campo con una relación deba ser auditado, la **entidad relacionada** también deberá llevar la anotación  @Audited
+
+```jsx title=""
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+@Data
+@Audited <----
+public abstract class Person {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(length = 30, nullable = false)
+    private String firstName;
+
+    @Column(length = 30, nullable = false)
+    @NotAudited  <-----
+    private String lastName;
+
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = DniType.class)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED) <-----
+    @JoinColumn(name = "dni_type_id")
+    private DniType dniType;
+
+}
+``` 
+
 
 
 ## --------------------------------------
