@@ -311,6 +311,21 @@ message.setText("Contenido del correo");
 
 ``` 
 
+### Configurar usuario y contraseña
+
+✅ Opción recomendada: Usar una contraseña de aplicación
+
+-   Ve a https://myaccount.google.com/
+
+-   Inicia sesión con la cuenta de Gmail que vas a usar.
+
+-   Asegúrate de tener habilitada la verificación en dos pasos (es obligatorio).
+
+-   Luego ve a Seguridad > Contraseñas de aplicaciones.
+
+-   Crea una nueva contraseña de aplicación (elige "Correo" y "Otro (nombre personalizado)", como por ejemplo "Spring App").
+
+-   Google te generará una contraseña de 16 caracteres. Esa será tu ${EMAIL_PASSWORD}.
 
 
 ## --------------------------------------
@@ -1026,7 +1041,12 @@ Se utiliza cuando se necesita más control sobre la consulta, por ejemplo, para 
 
 
 ```jsx title=""
-@Query("SELECT c FROM Consultation c JOIN FETCH c.details WHERE c.patient.id = :patientId")
+@Query("""
+      SELECT c 
+      FROM Consultation c 
+      JOIN FETCH c.details 
+      WHERE c.patient.id = :patientId
+      """)
 List<Consultation> findWithDetailsByPatientId(@Param("patientId") Long patientId);
 ``` 
 
