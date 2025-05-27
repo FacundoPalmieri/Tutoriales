@@ -325,7 +325,7 @@ message.setText("Contenido del correo");
 
 -   Crea una nueva contraseña de aplicación (elige "Correo" y "Otro (nombre personalizado)", como por ejemplo "Spring App").
 
--   Google te generará una contraseña de 16 caracteres. Esa será tu ${EMAIL_PASSWORD}.
+-   Google te generará una contraseña de 16 caracteres. Esa será tu Password
 
 
 ## --------------------------------------
@@ -687,11 +687,13 @@ private List<OtraEntidad> otraEntidad;
 
 <br/>
 
-### Herencia
+## Herencia
 
-🔧 En JPA (Spring Boot):
+En JPA existen dos formas principales de compartir atributos entre entidades cuando usamos herencia en Java: 
 
-#### @MappedSuperclass
+### @MappedSuperclass
+
+Se usa cuando querés reutilizar atributos entre varias entidades, pero la clase padre NO debe tener su propia tabla.
 
 -   No se crea una tabla para la clase Padre en la base de datos.
 
@@ -731,7 +733,11 @@ public class Empleado extends Persona {
 
 <br/>
 
-#### @Entity + @Inheritance (Recomendando)
+### @Inheritance (con @Entity) (Recomendando)
+
+Se usa cuando querés mapear una jerarquía de clases a tablas en la base de datos. Es decir, la superclase también es una entidad y tiene su propia tabla o interviene en el mapeo.
+
+Se combina con @Entity en la clase padre.
 
 -   Se crea una tabla clase Padre con los campos comunes.
 
@@ -743,13 +749,16 @@ public class Empleado extends Persona {
 ```jsx title="Clase Persona - Padre"
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED) // Crea una tabla para cada entidad.
+@Inheritance(strategy = InheritanceType.JOINED) // Crea una tabla para cada entidad inlcuyendo el Padre.
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true) // Establece el equals y Hascode para comparar
 @Table(name = "people")
-@Data
 public abstrac class Persona {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include //Compara objetos enteros solo por ID.
     private Long id;
 
     private String nombre;
@@ -767,6 +776,85 @@ public abstrac class Persona {
 
 
 ![herencia-jpa.png](/img/herencia-jpa.png)
+
+<br/>
+
+#### Estrategias posibles
+
+![estrategias-herencia](/img/estrategias-herencia.png)
+
+**SINGLE_TABLE**: Una sola tabla para todas las entidades Padre-Hija
+
+**JOINED**: Una tabla para cada entidad, inlcuyendo el padre. Las mismas están unidas por FK que es el ID. **RECOMENDADA**
+
+**TABLE_PER_CLASS**: Una tabla por cada clase hija, no se crea la clase padre. Estos conviven en las clases hijas.
+
+
+<br/>
+
+## Restricción @UniqueConstraint
+
+Es una anotación de JPA (Jakarta Persistence API) que se utiliza para declarar restricciones de unicidad a nivel de base de datos. Va dentro de la anotación @Table, que define cómo se mapea una entidad a una tabla.
+
+
+```jsx title=""
+@Audited
+@Entity
+@Getter
+@Setter
+@Table(name ="dentists", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "licenseNumber") // <------
+})
+public class Dentist {
+    @Id
+    @Column(name = "person_id")
+    private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    @JoinColumn(name = "person_id")
+    private Person person;
+
+    @Column(length = 30, unique = true, nullable = false)
+    private String licenseNumber;
+}
+
+``` 
+
+
+
+<br/>
+
+## @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+
+Este parámetro indica que solo los campos anotados con @EqualsAndHashCode.Include serán usados para generar equals() y hashCode().
+
+```jsx title=""
+@EqualsAndHashCode(onlyExplicitlyIncluded = true) // <------
+public class Person {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include // <------
+    private Long id;
+}
+
+``` 
+
+Esto nos permite comparar dos objetos completos solo por el ID.
+
+
+```jsx title=""
+ Gender gender1 = new Gender();
+ gender1.setId(1L);
+ gender1.setName("Masculino");
+
+ Gender gender2 = new Gender();
+ gender2.setId(1L);
+ gender2.setName("Femenino");
+
+System.out.println(gender1.equals(gender2)); // true
+``` 
 
 
 ## --------------------------------------
