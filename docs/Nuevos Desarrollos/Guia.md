@@ -405,6 +405,90 @@ public abstract class Person {
 
 ## --------------------------------------
 
+
+## Paginación
+
+Pageable → es un parámetro de entrada, representa la página, tamaño y orden. **Se usa pasa crear Pageable**
+
+Page< T > → es la respuesta, contiene la lista paginada + metadata como total, número de página, etc. **Se usa devolver datos en la firma de los métodos**
+
+Nunca escribas Pageable< ... > porque no es genérico.
+
+
+### 1. Configuramos valores por defecto en el properties
+
+```jsx title="application.properties"
+pagination.default-page=0
+pagination.default-size=10
+``` 
+
+### 2. Controller
+
+-   Tomamos los valores del application.properties
+
+-   Preguntamos si los valores que llegan por parametro son nulos. Si lo son toman el valor por defecto.
+
+-   Enviamos esos valores.
+
+
+```jsx title=""
+public class PatientController {
+
+    @Autowired
+    private IPatientService patientService;
+
+    @Value("${pagination.default-page}")
+    private int defaultPage;
+
+    @Value("${pagination.default-size}")
+    private int defaultSize;
+
+
+   @GetMapping("/all")
+    @OnlyAuthenticated
+    public ResponseEntity<Response<Page<PatientResponseDTO>>> getAll(@RequestParam(required = false) Integer page,
+                                                                     @RequestParam(required = false) Integer size) {
+        int pageValue = (page != null) ? page : defaultPage;
+        int sizeValue = (size != null) ? size : defaultSize;
+
+        Response<Page<PatientResponseDTO>> response = patientService.getAll(pageValue,sizeValue);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+}
+
+``` 
+
+
+### 3. Service
+
+```jsx title=""
+    @Override
+    public Response<Page<PatientResponseDTO>> getAll(int page, int size) { // Devolvemos un Page
+        try{
+
+            Pageable pageable = PageRequest.of(page,size, Sort.by("lastName").descending()); // Creamos un Pageable
+
+            Page <Patient> patients = patientRepository.findAllByEnabledTrue(pageable); // Buscamos en el repositorio en ese formato
+
+            Page<PatientResponseDTO> patientResponseDTOS = patients
+                    .map(patient -> {
+                        Set<PatientMedicalRisk> risks = patientMedicalRiskService.getByPatient(patient);
+                        Set<PatientMedicalRiskResponseDTO> riskDTOs = patientMedicalRiskService.convertToDTO(risks);
+                       return buildResponseDTO(patient,riskDTOs);
+                    });
+
+            return new Response<>(true,null, patientResponseDTOS);
+        }catch (DataAccessException | CannotCreateTransactionException e) {
+            throw new DataBaseException(e, "PatientService",null,null, "getAll");
+        }
+    }
+
+``` 
+
+
+## --------------------------------------
+
 ## Estructura de datos
 
 ### Normalización de tablas
@@ -870,6 +954,7 @@ System.out.println(gender1.equals(gender2)); // true
 8. Realizar la documentación.
 
 
+
 ```jsx title="Ejemplo Encabezado "
 /**
  * Controlador encargado de gestionar los usuarios en el sistema. Proporciona operaciones para obtener
@@ -1150,7 +1235,11 @@ List<Consultation> findWithDetailsByPatientId(@Param("patientId") Long patientId
 
 -   Verifica que el valor de un atributo no sea null, es decir que exista **pero podría estar vacío.**
 
+:::tip
 **Aplicar a: tipos de datos objeto (Long, Integer, Double, LocalDate, List, Set, etc.).**
+:::
+
+
 
 
 2. @NotEmpty
@@ -1161,7 +1250,9 @@ List<Consultation> findWithDetailsByPatientId(@Param("patientId") Long patientId
 
 -   No chequea si hay solo espacios (eso es @NotBlank).
 
+:::tip
 **Aplicar a: String, List, Set, Map, Array.**
+:::
 
 
 3. @NotBlank
@@ -1172,7 +1263,9 @@ List<Consultation> findWithDetailsByPatientId(@Param("patientId") Long patientId
 
 -   Es más estricto que @NotEmpty, porque también revisa los espacios.
 
+:::tip
 **Aplicar a: únicamente en String.**
+:::
 
 
 
