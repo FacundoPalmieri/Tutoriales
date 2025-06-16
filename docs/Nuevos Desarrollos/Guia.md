@@ -425,11 +425,11 @@ Nunca escribas Pageable< ... > porque no es genérico.
 ### 1. Configuramos valores por defecto en el properties
 
 ```jsx title="application.properties"
-#Paginación de getAll
 pagination.default-page= 0
 pagination.default-size= 10
-pagination.default-sortBy= 1
 pagination.default-direction=asc
+pagination.default.user-sortBy= username
+pagination.default.patient-sortBy= person.lastName
 ``` 
 
 ### 2. Controller
@@ -454,7 +454,7 @@ public class PatientController {
     private int defaultSize;
 
     @Value("${pagination.default-sortBy}")
-    private String defaultSortBy;
+    private String default.patient-SortBy;
 
     @Value("${pagination.default-direction}")
     private String defaultDirection;
