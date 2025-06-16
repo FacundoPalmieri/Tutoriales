@@ -408,9 +408,16 @@ public abstract class Person {
 
 ## Paginación
 
-Pageable → es un parámetro de entrada, representa la página, tamaño y orden. **Se usa pasa crear Pageable**
+-   Pageable → es un parámetro de entrada, representa la página, tamaño y orden. 
 
-Page< T > → es la respuesta, contiene la lista paginada + metadata como total, número de página, etc. **Se usa devolver datos en la firma de los métodos**
+        -   **Se usa pasa crear Pageable**
+
+<br/>
+
+-   Page< T > → es la respuesta, contiene la lista paginada + metadata como total, número de página, etc. 
+
+        -   **Se usa devolver datos en la firma de los métodos**
+        -   **import org.springframework.data.domain.Page;**
 
 Nunca escribas Pageable< ... > porque no es genérico.
 
@@ -418,8 +425,11 @@ Nunca escribas Pageable< ... > porque no es genérico.
 ### 1. Configuramos valores por defecto en el properties
 
 ```jsx title="application.properties"
-pagination.default-page=0
-pagination.default-size=10
+#Paginación de getAll
+pagination.default-page= 0
+pagination.default-size= 10
+pagination.default-sortBy= 1
+pagination.default-direction=asc
 ``` 
 
 ### 2. Controller
@@ -443,15 +453,25 @@ public class PatientController {
     @Value("${pagination.default-size}")
     private int defaultSize;
 
+    @Value("${pagination.default-sortBy}")
+    private String defaultSortBy;
+
+    @Value("${pagination.default-direction}")
+    private String defaultDirection;
+
 
    @GetMapping("/all")
     @OnlyAuthenticated
     public ResponseEntity<Response<Page<PatientResponseDTO>>> getAll(@RequestParam(required = false) Integer page,
-                                                                     @RequestParam(required = false) Integer size) {
+                                                                     @RequestParam(required = false) Integer size,
+                                                                     @RequestParam(required = false) String  sortBy,
+                                                                     @RequestParam(required = false) String  direction) {
         int pageValue = (page != null) ? page : defaultPage;
         int sizeValue = (size != null) ? size : defaultSize;
+        String sortByValue = (sortBy != null) ? sortBy : defaultSortBy;
+        String directionValue = (direction != null) ? direction : defaultDirection;
 
-        Response<Page<PatientResponseDTO>> response = patientService.getAll(pageValue,sizeValue);
+        Response<Page<PatientResponseDTO>> response = patientService.getAll(pageValue,sizeValue, sortByValue,directionValue);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -463,13 +483,19 @@ public class PatientController {
 ### 3. Service
 
 ```jsx title=""
-    @Override
-    public Response<Page<PatientResponseDTO>> getAll(int page, int size) { // Devolvemos un Page
+ @Override
+    public Response<Page<PatientResponseDTO>> getAll(int page, int size, String sortBy, String direction) {
         try{
 
-            Pageable pageable = PageRequest.of(page,size, Sort.by("lastName").descending()); // Creamos un Pageable
+            //Define criterio de ordenamiento
+            Sort sort = direction.equalsIgnoreCase("desc") ?
+                    Sort.by(sortBy).descending()
+                    : Sort.by(sortBy).ascending();
 
-            Page <Patient> patients = patientRepository.findAllByEnabledTrue(pageable); // Buscamos en el repositorio en ese formato
+            //Se define paginación con n°página, cantidad elementos y ordenamiento.
+            Pageable pageable = PageRequest.of(page,size, sort);
+
+            Page <Patient> patients = patientRepository.findAllByEnabledTrue(pageable);
 
             Page<PatientResponseDTO> patientResponseDTOS = patients
                     .map(patient -> {
@@ -483,6 +509,7 @@ public class PatientController {
             throw new DataBaseException(e, "PatientService",null,null, "getAll");
         }
     }
+
 
 ``` 
 
