@@ -454,7 +454,7 @@ public class PatientController {
     private int defaultSize;
 
     @Value("${pagination.default-sortBy}")
-    private String default.patient-SortBy;
+    private String defaultUserSortBy;
 
     @Value("${pagination.default-direction}")
     private String defaultDirection;
@@ -643,52 +643,62 @@ La relación solo está del lado de la tabla intermedia.
 
 ## Model
 
--   Colocar @Entity en la clase
+Colocar como anotaciones de la clase:
 
--   Colocar @Data en la clase
+-   @Entity
 
-    -   Lombok crea automáticamente:
+-   @Getter
 
-        ✅ getters y setters para todos los campos
+-   @Setter
 
-        ✅ toString()
+-   @AllArgsConstructor
 
-        ✅ equals() y hashCode()
+-   @NoArgsConstructor
 
-        ✅ Un constructor vacío
+-   @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 
-        ✅ Métodos canEqual() (útil para herencia)
+-   @Table(name = "consultations")
 
--   Nombrar la tabla en inglés @Table(name= "nombre")
+-   @Data: Lombok genera getters/setters, toString, equals, hashCode, constructor vacío, pero no sirve bien para realizar comparaciones por equals y hashcode.
+
+
+Colocar como anotaciones de los atributos:
 
 -   Agregar restricciones de bases de datos en los atributos con la anotación @Column o @JoinColumn para relaciones.
+
+   @Column(name = '...' , nullable = false, unique = true, length = 50)
+
+   @ManyToOne(fetch = FetchType.LAZY, targetEntity = PaymentMethod.class)
 
 
 ```jsx title="Ejemplo"
 @Entity
-@Data
-@Table(name= "countries")
-public class Pais {
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Table(name = "cities")
+public class City {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @EqualsAndHashCode.Include
+    private Long id;
 
-    @Column(length = 15, unique = true, nullable = false)
+    @Column(length = 50, nullable = false)
     private String name;
 
-    @Column(length = 15, unique = true, nullable = false)
-    private String nationality;
-
-    @Column(nullable = false)
-    private boolean enabled;
+    // Relación ManyToOne hacia Pais
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Country.class)
+    @JoinColumn(name = "country_id", nullable = false)
+    private Country country;
 }
+
 ``` 
 
 
 <br/>
 
-### Pensar las relaciones
+### Relaciones entre entidades
 
 Una pregunta clave que siempre podés hacerte para no marearte:
 
@@ -781,10 +791,12 @@ En la entidad Uno:
 
 
 ```jsx title="Entidad CLUB"
+@ManyToMany(fetch = FetchType.LAZY)
 @JoinTable(
     name = "club_competitions",   // 1 Nombre tabla intermedia
-    joinColumn = @JoinColumn(name = "club"), // 2 Nombre de la columna
-    inverseJoinColumns = @JoinColumn(name= "competition") // 3 Nombre de la columna
+    joinColumn = @JoinColumn(name = "club_id"), // 2 Nombre de la columna
+    inverseJoinColumns = @JoinColumn(name= "competition_id") // 3 Nombre de la columna
+    uniqueConstraints = @UniqueConstraint(columnNames = {"club_id","competition_id"})
 )
 private List<OtraEntidad> otraEntidad;
 

@@ -136,15 +136,20 @@ Para realizar el merge debemos primero estar parados en la rama que queremos act
 
 
 ```jsx title="Ejemplo"
-git checkout main // Para ubicarnos en la rama principal
 
-git fetch // Traete la última versión de todo lo que está en GitHub
+// 1. Posicionarte en la rama principal (main)
+git checkout main
 
-/* ----------------------------------------------------------------------------------------------*/
-git merge mi-rama //(RAMAS LOCALES) unificas los cambios de la rama “mi-rama” con la Principal
 
-git merge origin/mi-rama //(RAMAS REMOTAS) unificas los cambios de la rama “mi-rama” con la Principal
+//2. Traete la última versión de todo lo que está en GitHub
+git fetch 
 
+//3. (RAMAS LOCALES) unificas los cambios de la rama “mi-rama” con la Principal
+git merge mi-rama -m "Merge de xxx a xxx"
+
+
+//4.  Subir el merge al remoto
+git push origin main 
 ```
 
 
