@@ -259,147 +259,8 @@ Hoy en día, el protocolo SSL ha sido reemplazado por TLS (Transport Layer Secur
 
 
 
-## --------------------------------------
 
 
-## Java Mail Sender
-
-Es una interfaz de Spring que actúa como un cliente de correo. Permite enviar emails desde una aplicación Java utilizando el protocolo SMTP( Simple Mail Transfer Protocol - Protocolo simple de transferencia de correo) por ejemplo, usando Gmail, Outlook, etc.
-
-Se puede: 
-
--   Adjuntar archivos con MimeMessageHelper.
-
--   Enviar correos HTML.
-
--   Enviar a varios destinatarios.
-
--   Agregar imágenes incrustadas.
-
-<br/>
-
-1.  Configuración del servidor SMTP
-
-En el archivo application.properties o application.yml, configuras los datos del servidor de correo.
-
-```jsx title=""
-spring.mail.host=smtp.gmail.com
-spring.mail.port=587
-spring.mail.username=tu.email@gmail.com
-spring.mail.password=tu_contraseña
-spring.mail.properties.mail.smtp.auth=true
-spring.mail.properties.mail.smtp.starttls.enable=true
-``` 
-
-
-
-2. Crear un servicio e inyecatar JavaMailSender
-
-```jsx title=""
-@Autowired
-private JavaMailSender mailSender;
-
-``` 
-
-3. Crear el mensaje
-```jsx title=""
-SimpleMailMessage message = new SimpleMailMessage();
-message.setFrom("tu.email@gmail.com");
-message.setTo("destinatario@email.com");
-message.setSubject("Asunto del correo");
-message.setText("Contenido del correo");
-
-``` 
-
-### Configurar usuario y contraseña
-
-✅ Opción recomendada: Usar una contraseña de aplicación
-
--   Ve a https://myaccount.google.com/
-
--   Inicia sesión con la cuenta de Gmail que vas a usar.
-
--   Asegúrate de tener habilitada la verificación en dos pasos (es obligatorio).
-
--   Luego ve a Seguridad > Contraseñas de aplicaciones.
-
--   Crea una nueva contraseña de aplicación (elige "Correo" y "Otro (nombre personalizado)", como por ejemplo "Spring App").
-
--   Google te generará una contraseña de 16 caracteres. Esa será tu Password
-
-
-## --------------------------------------
-
-
-## @Audited
-
-@Audited es una anotación que ofrece Hibernate Envers para registrar automáticamente los cambios históricos de una entidad en la base de datos. Cada vez que se crea, actualiza o elimina una entidad, se guarda una copia del estado anterior en una tabla de auditoría.
-
-Así, podés consultar el "historial" de una entidad, como si fuera un sistema de versiones.
-
-### Requisitos previos
-
--   Tener una app Spring Boot con JPA y una base de datos configurada (H2, PostgreSQL, MySQL, etc.)
-
--   Usar Hibernate como proveedor JPA (es el default en Spring Boot)
-
-### Paso 1: Agregar la dependencia de Hibernate Envers
-```jsx title="POM.xml"
-	<dependency>
-			<groupId>org.hibernate.orm</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>6.4.4.Final</version>
-		</dependency>
-
-
-		<!--Dependencia para generar tablas de auditoría ante cambios de persistencia -->
-		<dependency>
-			<groupId>org.hibernate.orm</groupId>
-			<artifactId>hibernate-envers</artifactId>
-			<version>6.4.4.Final</version>
-		</dependency>
-
-``` 
-
-### Paso 2: Anotar las entidades con @Audited
-
-En la entidad a auditar debemos:
-
--   Colocar @Audited como anotación de la entidad
-
-En caso que querramos excluir algún atributo podremos hacerlo de la siguiente manera:
-
--    @NotAudited : Para campo simples
-
--   @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED) : Para campos donde existan relaciones (Ej: @ManyToOne)
-
-En el caso que un campo con una relación deba ser auditado, la **entidad relacionada** también deberá llevar la anotación  @Audited
-
-```jsx title=""
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@Data
-@Audited <----
-public abstract class Person {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(length = 30, nullable = false)
-    private String firstName;
-
-    @Column(length = 30, nullable = false)
-    @NotAudited  <-----
-    private String lastName;
-
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = DniType.class)
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED) <-----
-    @JoinColumn(name = "dni_type_id")
-    private DniType dniType;
-
-}
-``` 
 
 
 
@@ -729,6 +590,10 @@ Muchos MedicalHistory ➡️ Un Patient
 
 La relación estará del lado de la entidad menos importante o dependiente.
 
+Se representa como un solo objeto en la entidad.
+
+Cada registro de A tiene un solo B, y B tiene solo A
+
 Agregaremos:
 
 -   Un atributo de la otra clase usando composición.
@@ -754,6 +619,14 @@ Agregaremos:
 
 
 ### Sintaxis Relación ManyToOne o OneToMany
+
+En la entidad que coloco la anotación: 
+
+@OneToMany: colección (List, Set) -	Un registro de A tiene muchos B
+
+@ManyToOne:	un objeto -	Muchos registros de A apuntan al mismo B
+
+
 
 En la entidad Muchos:
 

@@ -406,3 +406,102 @@ Maria (35 años)
 ```
 
 ![colecction](/img/collection.png)
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
+## MAP  
+
+###  ¿Qué es un Map en Java?
+
+Un Map es una estructura de datos que asocia claves (key) con valores (value).
+
+Imaginate un diccionario: buscás la palabra (clave) y te da la definición (valor).
+
+```jsx title=""
+Map<String, String> capitales = new HashMap<>();
+capitales.put("Argentina", "Buenos Aires");
+capitales.put("Brasil", "Brasilia");
+capitales.put("Chile", "Santiago");
+```
+
+
+### ¿Cómo recorro un Map?
+
+Opción 1: con un for-each sobre entrySet()
+
+```jsx title=""
+for (Map.Entry<String, String> entry : capitales.entrySet()) {
+    System.out.println("País: " + entry.getKey() + " - Capital: " + entry.getValue());
+}
+
+```
+
+"Por cada par clave-valor (entry) en el conjunto de entradas del mapa (capitales.entrySet()), imprimí la clave con getKey() y el valor con getValue()."
+
+#### ¿Qué es entrySet()?
+
+Es un método que devuelve un conjunto (Set) de pares clave-valor.
+
+Cada elemento del Set es un Map.Entry< K, V >.
+
+
+
+###  ¿Cómo agrego un elemento?
+
+Si ya existe esa clave, se reemplaza el valor.
+
+```jsx title=""
+capitales.put("Uruguay", "Montevideo");
+
+```
+
+
+### ¿Cómo obtengo un valor?
+
+```jsx title=""
+String capital = capitales.get("Argentina");
+
+System.out.println(capital); // Buenos Aires
+```
+
+
+### ¿Cómo elimino un elemento?
+
+```jsx title=""
+capitales.remove("Brasil");
+
+```
+
+### ¿Cómo saber si contiene una clave o valor?
+
+```jsx title=""
+capitales.containsKey("Argentina"); // true
+capitales.containsValue("Santiago"); // true
+```
+
+### ¿Cómo ordeno un Map?
+
+Por claves:
+
+Usar un TreeMap. Este automáticamente ordena por claves alfabéticamente o numéricas.
+
+**Se pueden agregar desordenados y el orden se mantiene automáticamente a medida que agregás las claves.**
+
+```jsx title=""
+Map<String, String> capitalesOrdenado = new TreeMap<>(capitales);
+
+```
+
+
+Por valores (más avanzado, pero lo vas a necesitar):
+
+```jsx title=""
+capitales.entrySet()
+    .stream()
+    .sorted(Map.Entry.comparingByValue())
+    .forEach(entry -> System.out.println(entry.getKey() + ": " + entry.getValue()));
+
+```
