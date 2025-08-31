@@ -5,7 +5,65 @@ sidebar_position: 4
 # 4 -  SOAP
 
 
-## Concepto
+## Conceptos
+
+### 1️⃣ Web Service
+
+Qué es: un servicio que se expone por Internet para que otras aplicaciones lo consuman.
+
+Qué hace: permite que un programa llame a otro programa (aunque sean de distintos lenguajes o plataformas) y obtenga datos o ejecute operaciones.
+
+Ejemplo:  Puede ser API REST (Json) o SOAP (xml)
+
+💡 Analogía: el Web Service es la cocina del restaurante: recibe pedidos (requests) y devuelve platos (responses).
+
+### 2️⃣ SOAP
+
+Qué es: un protocolo que define cómo se estructuran los mensajes entre tu aplicación y el Web Service.
+
+Qué hace:
+
+Define cómo enviar datos en XML.
+
+Describe errores, encabezados, seguridad.
+
+Relación con Web Service: es solo la forma de hablarle al Web Service.
+
+💡 Analogía: SOAP es el lenguaje que usan los camareros para transmitir tu pedido a la cocina.
+
+### 3️⃣ WCF
+
+Qué es: un framework de .NET para crear Web Services.
+
+Qué hace:
+
+Te permite exponer un Web Service SOAP o REST.
+
+Genera automáticamente el WSDL y los proxies cliente.
+
+Maneja la comunicación, seguridad y bindings.
+
+Ejemplo :
+-   Java – Spring Boot → Web Service API REST
+
+-   .NET – WCF         → Web Service SOAP (también puede exponer REST)
+
+💡 Analogía: WCF es la cocina completa equipada que te permite implementar el restaurante y recibir pedidos con un protocolo definido (SOAP).
+
+
+
+![soap](/img/soap.png)
+
+Web Service = API REST o SOAP → es el concepto de “servicio web”.
+
+SOAP → XML + WSDL → protocolo formal para Web Services.
+
+REST → HTTP + JSON (o XML) → estilo ligero para Web Services.
+
+Spring Boot → te permite crear APIs REST fácilmente en Java.
+
+WCF → framework de .NET para crear Web Services SOAP (y REST si querés).
+
 
 Un WSDL (Web Services Description Language) es un archivo XML que describe de forma estructurada cómo interactuar con un servicio web SOAP.
 
@@ -149,7 +207,7 @@ son los objetos que representan el contrato SOAP. Ejemplo: WsRenderParam, WsPDFS
 ``` 
 
 
-## Actualizar dependencias
+### Actualizar dependencias
 
 -   Hacés click derecho sobre el pom.xml → "Maven" → "Reload project".
 
@@ -225,7 +283,7 @@ Leer la respuesta.
 Pero las clases (E2VaultWS, WsRenderParam, WsRenderPages…) cambian 100% según el WSDL.
 
 
-### Configuración de SOAP   
+## Configuración de SOAP   
 
 Definimos el puerto de conexión a SOAP
 
