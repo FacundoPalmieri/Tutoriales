@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 10
 ---
 
 # 9 - Preguntas Técnicas.
@@ -10,7 +10,7 @@ sidebar_position: 9
 La diferencia principal entre JDK y JRE es:
 -   JDK (Java Development Kit - Kit de desarrollo): Es un conjunto de herramientas para **desarrollar** aplicaciones Java. Incluye el JRE, el compilador (javac) entre otras herramientas.
 
--   JRE (Java Runtime Environment - Entorno de ejecución): Es el entorno necesario para **ejecutar** aplicaciones Java. Incluye la JVM (Java Virtual Machine) y las bibliotecas esenciales, pero no tiene herramientas de desarrollo como el compilador. Sirve solo para ejecutar programas ya compilados.
+-   JRE (Java Runtime Environment - Entorno de ejecución): Es el entorno necesario para **ejecutar** aplicaciones Java. Incluye la JVM (Java Virtual Machine), pero no tiene herramientas de desarrollo como el compilador. Sirve solo para ejecutar programas ya compilados.
 
 :::tip[Conclusión]
 -   JDK: Para desarrollar y ejecutar aplicaciones Java.
@@ -30,9 +30,9 @@ En resumen, Java es independiente de la plataforma porque el bytecode generado s
 
 ### ¿Cuál es la diferencia entre una clase abstracta y una interfaz?
 
-- Clase abstracta: Es una clase que puede tener métodos tanto con implementación como sin implementación. No se puede crear una instancia directamente, y se usa para compartir comportamientos comunes entre varias clases.
+- Clase abstracta: Es un punto intermedio entre una interfaz y una clase común. No se puede instanciar directamente, pero sí puede contener tanto métodos abstractos (sin código) como métodos ya implementados.
 
-- Interfaz: Solo define métodos sin implementación (salvo los que sean default o static). Las clases que implementan una interfaz deben proporcionar el código de esos métodos. Una clase puede implementar varias interfaces, pero solo puede heredar de una clase abstracta.
+- Interfaz: Solo define métodos sin implementación (salvo los que sean default o static). Las clases que implementan una interfaz deben proporcionar el código de esos métodos.
 
 :::tip[Conclusión]
 -   Clase abstracta: Puede tener código y se hereda.
@@ -104,6 +104,15 @@ class Pajaro implements Volador(
 - El Pajaro debe implementar todo lo que define la interfaz Volador, en este caso el método volar.
 
 :::
+
+---------------------------------------
+
+### ¿Qué diferencia hay entre programación funcional e imperativa? 🔄
+
+La programación imperativa es el estilo más clásico y tradicional. En este enfoque, el programador le indica a la computadora exactamente qué pasos debe seguir para llegar a un resultado. Es como dar una receta paso a paso.
+
+La programación funcional se centra más en describir qué se quiere lograr, en lugar de detallar cómo hacerlo paso a paso (trabajando más con funciones puras). Podríamos compararlo con pedir un servicio que se encargue del trabajo: no te preocupás por los pasos intermedios, solo decís qué resultado buscás.
+
 
 ---------------------------------------
 
@@ -778,10 +787,3 @@ Extiende OncePerRequestFilter y se registra en la cadena de filtros
 
 
 <br/><br/>
-
-## Cierre del Tutorial 🎉
-Hemos llegado al final de este tutorial sobre el manejo de excepciones en Java. En este recorrido, exploramos diversos aspectos esenciales, desde la comprensión de qué son las excepciones hasta su correcta gestión en nuestras aplicaciones. 💻✨
-
-A lo largo del tutorial, hemos abordado conceptos fundamentales como las diferencias entre excepciones checked y unchecked, el uso de `throw` y `throws`, y la estructura base de las excepciones en Java. También hemos aprendido sobre la importancia de Java EE, la diferencia entre Servlets y JSP, y cómo JPA simplifica el manejo de datos en aplicaciones empresariales. 📊📦
-
-Ahora es momento de aplicar lo aprendido en tus propios proyectos. ¡Adelante! 🚀
