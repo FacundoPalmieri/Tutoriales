@@ -45,7 +45,7 @@ Por ejemplo, trabajar con una interfaz sin importar la implementación concreta.
 ---
 
 ### Diferencia entre Clase Abstracta e Interfaz
-- **Clase abstracta:** puede tener métodos con o sin implementación.  
+- **Clase abstracta:** puede tener métodos con o sin implementación.  No puede instanciarse directamente. Solo puede ser heredada
 - **Interfaz:** solo define métodos que las clases deben implementar (a partir de Java 8 puede tener métodos default).
 
 📌 Usar interfaz favorece la flexibilidad; usar clase abstracta permite compartir comportamiento.
@@ -293,14 +293,8 @@ Controller: recibe peticiones y coordina la lógica.
 ---
 
 
-### 32. ¿Qué es el principio de inversión de dependencias?
 
-Las clases deben depender de abstracciones (interfaces), no de implementaciones concretas.
-
----
-
-
-### 33. ¿Qué son las anotaciones en Java?
+### 32. ¿Qué son las anotaciones en Java?
 
 Metadatos que agregan información al código.
 Ejemplo: @Override, @Autowired, @Entity.
@@ -308,7 +302,7 @@ Ejemplo: @Override, @Autowired, @Entity.
 ---
 
 
-### 34. ¿Qué hace la anotación @Override?
+### 33. ¿Qué hace la anotación @Override?
 
 Indica que un método está sobrescribiendo uno de su clase padre o interfaz.
 
@@ -317,21 +311,21 @@ Indica que un método está sobrescribiendo uno de su clase padre o interfaz.
 
 
 
-### 35. ¿Qué hace el método hashCode()?
+### 34. ¿Qué hace el método hashCode()?
 
 Devuelve un número entero usado por estructuras como HashMap para ubicar objetos rápidamente.
 
 ---
 
 
-### 36. ¿Qué es un DTO?
+### 35. ¿Qué es un DTO?
 
 Un Data Transfer Object. Se usa para transferir datos entre capas (por ejemplo, del backend al frontend).
 
 ---
 
 
-### 37. ¿Qué diferencia hay entre POJO y Bean?
+### 36. ¿Qué diferencia hay entre POJO y Bean?
 
 POJO: clase simple sin reglas especiales.
 
@@ -389,7 +383,16 @@ Ejemplo típico: cualquier bean inyectado en otra clase (el control de su creaci
 ---
 
 
-### 3. ¿Qué diferencia hay entre @Component, @Service, @Repository y @Controller?
+
+### 3. ¿Qué es el principio de inversión de dependencias?
+
+Las clases deben depender de abstracciones (interfaces), no de implementaciones concretas.
+
+---
+
+
+
+### 4. ¿Qué diferencia hay entre @Component, @Service, @Repository y @Controller?
 
 Todas son detectadas por Spring, pero cada una tiene un propósito:
 
@@ -404,7 +407,7 @@ Todas son detectadas por Spring, pero cada una tiene un propósito:
 ---
 
 
-### 4. ¿Qué es un Bean en Spring?
+### 5. ¿Qué es un Bean en Spring?
 
 Es un objeto gestionado por el contenedor de Spring.
 Spring controla su ciclo de vida (creación, inyección, destrucción).
@@ -412,7 +415,7 @@ Spring controla su ciclo de vida (creación, inyección, destrucción).
 ---
 
 
-### 5. ¿Qué diferencia hay entre @Bean y @Component?
+### 6. ¿Qué diferencia hay entre @Bean y @Component?
 
 @Bean: se usa dentro de una clase de configuración (@Configuration) para registrar un objeto manualmente.
 
@@ -421,7 +424,7 @@ Spring controla su ciclo de vida (creación, inyección, destrucción).
 ---
 
 
-### 6. ¿Qué es una capa Service?
+### 7. ¿Qué es una capa Service?
 
 Es donde va la lógica de negocio.
 Recibe datos del controlador, los procesa y llama a los repositorios si es necesario.
@@ -429,7 +432,7 @@ Recibe datos del controlador, los procesa y llama a los repositorios si es neces
 ---
 
 
-### 7. ¿Qué es la capa Repository?
+### 8. ¿Qué es la capa Repository?
 
 Es la encargada del acceso a datos.
 Generalmente extiende de JpaRepository o CrudRepository.
@@ -438,7 +441,7 @@ Generalmente extiende de JpaRepository o CrudRepository.
 
 
 
-### 8. ¿Qué es el application.properties o application.yml?
+### 9. ¿Qué es el application.properties o application.yml?
 
 Archivo de configuración donde se definen propiedades del proyecto:
 puerto, base de datos, logs, JWT, etc.
@@ -446,14 +449,14 @@ puerto, base de datos, logs, JWT, etc.
 ---
 
 
-### 9. ¿Qué es el archivo pom.xml?
+### 10. ¿Qué es el archivo pom.xml?
 
 Archivo de Maven donde se definen las dependencias, plugins y versión de Java usada.
 
 
 ---
 
-### 10. ¿Qué diferencia hay entre @Controller y @RestController?
+### 11. ¿Qué diferencia hay entre @Controller y @RestController?
 
 @Controller: devuelve vistas (HTML, JSP, etc).
 
@@ -462,14 +465,14 @@ Archivo de Maven donde se definen las dependencias, plugins y versión de Java u
 
 ---
 
-### 11. ¿Qué es un ResponseEntity?
+### 12. ¿Qué es un ResponseEntity?
 
 Objeto que permite controlar la respuesta HTTP: código de estado, headers y cuerpo.
 
 
 ---
 
-### 12. ¿Qué es el manejo de excepciones en Spring Boot?
+### 13. ¿Qué es el manejo de excepciones en Spring Boot?
 
 Se pueden manejar globalmente usando @ControllerAdvice y @ExceptionHandler.
 
