@@ -84,6 +84,15 @@ Ingresar a la carpeta del proyecto, no a la carpeta que contiene la carpeta del 
 
 ![git-vincular-repo2](/img/vincular-repo2.png)
 
+:::tip[git push -u origin main]
+**origin**: Rama remota
+
+**main**: rama LOCAL
+
+"Subi al repo "Origin" mi rama local main"
+:::
+
+
 10. Verificación desde el servidor.
 
 

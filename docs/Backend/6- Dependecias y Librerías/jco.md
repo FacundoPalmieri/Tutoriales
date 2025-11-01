@@ -345,3 +345,40 @@ public class CommercialDataService implements ICommerialDataService {
 
 
 Esto devuelve los atributos de la conexión SAP para verificar que JCo funciona.
+
+
+
+--------------------
+
+## Información importante
+
+SAP JCo3 no está 100% hecho en Java.
+
+Parte Java (sapjco3.jar)
+
+Está escrita en Java puro.
+
+Define las clases que vos usás en tu código, por ejemplo:
+
+```jsx title=""
+JCoDestination destination = JCoDestinationManager.getDestination("SAP_CONFIG");
+
+```
+
+
+
+
+
+Parte Nativa (sapjco3.dll / .so)
+
+Está escrita en C/C++.
+
+Es la parte que realmente hace el “trabajo pesado”:
+hablar con SAP a nivel de red, manejar sockets, autenticación RFC, etc.
+
+Java no puede hacer eso directamente, por eso necesita pedirle ayuda al sistema operativo a través de esa DLL.
+
+En resumen:
+
+JCo3.jar es como la “cara Java” visible,
+sapjco3.dll es el “motor oculto” en C/C++ que hace las operaciones de bajo nivel.

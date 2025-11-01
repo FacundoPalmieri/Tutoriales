@@ -333,7 +333,7 @@ Bean: POJO gestionado por el contenedor de Spring.
 
 ------------------------------------------------------------------------------------------------------------------------------------
 
-## 🧩 BLOQUE 3 – SPRING BOOT Y ECOSISTEMA
+## 🧩 BLOQUE 2 – SPRING BOOT Y ECOSISTEMA
 
 ### 1. ¿Qué es Spring Boot?
 
@@ -476,9 +476,9 @@ Objeto que permite controlar la respuesta HTTP: código de estado, headers y cue
 
 Se pueden manejar globalmente usando @ControllerAdvice y @ExceptionHandler.
 
----------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------
 
-## Spring Data
+## BLOQUE 3 Spring Data
 
 📘 Es un módulo de Spring que simplifica el acceso a datos.
 
@@ -610,7 +610,7 @@ Optimiza consultas que solo leen datos, evitando operaciones de escritura innece
 ---------------------------------------------------------------------------------------------------------------
 
 
-## Spring Security
+## BLOQUE 4 - Spring Security
 
 ### 1. ¿Qué es Spring Security?
 
@@ -679,7 +679,7 @@ Es un componente que intercepta las peticiones HTTP antes de llegar al controlad
 
 
 ---------------------------------------------------------------------------------------------------------------
-## Test Unitarios
+##  BLOQUE 5- Test Unitarios
 
 ### 1. ¿Qué es un test unitario?
 
@@ -707,7 +707,7 @@ Permite simular objetos y comportamientos (mocks) para probar unidades de códig
 
 ---------------------------------------------------------------------------------------------------------------
 
-## Microservicios
+## BLOQUE 6 -  Microservicios
 
 ### 1. ¿Qué es un microservicio?
 
@@ -749,7 +749,7 @@ Asíncrona: usa colas o mensajería (RabbitMQ, Kafka).
 
 ---------------------------------------------------------------------------------------------------------------
 
-## Despligeuge
+## BLOQUE 7 - Despligeuge
 
 ### 1. ¿Qué es un Dockerfile?
 
@@ -776,3 +776,95 @@ Permite ejecutar tu app en cualquier entorno sin diferencias.
 
 Proceso automatizado para compilar, testear y desplegar tu aplicación.
 Ejemplo: GitHub Actions, Jenkins, GitLab CI.
+
+
+
+-------------------------------------------------------------------------------
+
+## BLOQUE 8 - Compilación proyecto
+
+
+### Al darle Play al IDE :
+
+### 1. Maven compila el proyecto
+
+Maven usa el pom.xml para:
+
+- Ver qué dependencias necesita.
+
+- Buscar cada una en el repositorio local (~/.m2/repository).
+
+- Si falta alguna → la descarga desde Maven Central o el repo que tengas configurado (Todas las dependencias se descargan ya en .jar - versión final para compilación)
+
+- Compila tu código fuente (.java) y genera los .class en target/classes.
+
+- Esos .class son el bytecode: el lenguaje intermedio que entiende la JVM.
+
+Ese classpath contiene:
+
+- Tus clases compiladas → target/classes
+
+- Los jars de las dependencias → los que Maven resolvió en ~/.m2/repository
+
+- Cualquier jar manual (como sapjco3.jar) que hayas agregado en /lib
+
+📦 En resumen, el classpath es la “bolsa de clases” que la JVM va a usar.
+
+```jsx title=""
+target/classes/com/facu/app/
+    Main.class
+    Usuario.class
+    UsuarioService.class
+
+
+```
+
+### 2. La JVM arranca y carga el main()
+
+Acá empieza la magia real:
+
+- La JVM ejecuta tu clase con main() (por ejemplo com.facundo.MiAppSpringApplication).
+
+- A medida que el programa pide otras clases (por ejemplo UsuarioService, ClienteRepository, SpringApplication),
+la JVM las busca dentro del classpath.
+
+- Si las encuentra → las carga en memoria.
+- Si no → lanza ClassNotFoundException.
+
+🧠 Así, la JVM “va pidiendo” clases a medida que el código lo necesita, no todas al inicio.
+
+
+### Si hay una librería especial (como SAP JCo3)
+
+Ahí entra el detalle que mencionabas:
+
+“La máquina virtual debe saberlo e ir a buscarla donde le indique en la configuración de la misma.”
+
+
+La parte Java (sapjco3.jar) se encuentra por el classpath.
+
+La parte nativa (sapjco3.dll o .so) no está en el classpath,
+sino que la JVM la busca en el java.library.path (otro conjunto de rutas).
+
+Por eso, cuando arrancás la app, la JVM tiene dos “mapas”:
+
+- Java bytecode (.class, .jar)
+  - Los ubica en el classpath : Contiene la app y librerías Java puras
+
+- Código nativo (.dll / .so)
+  - java.library.path : Contiene librerías del sistema como SAP JCo.
+
+
+En resumen:
+
+✅ Al darle Play en el IDE :
+
+- Maven compila el código fuente con las dependencias del .m2 (descarga si falta alguna).
+
+- Genera bytecode en target/classes.
+
+- IntelliJ arma el classpath con tus clases y todas las dependencias (.jar).
+
+- La JVM recibe ese classpath, ejecuta el main(), y carga las clases que va necesitando.
+
+- Si hay librerías nativas (como JCo3), las busca en el java.library.path.
