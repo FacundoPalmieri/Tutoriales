@@ -81,6 +81,8 @@ Java, .NET, y otros lenguajes lo usan para generar automáticamente las clases n
 
 ``` 
 
+
+
 ![soap](/img/soap.png)
 
 Web Service = API REST o SOAP → es el concepto de “servicio web”.
