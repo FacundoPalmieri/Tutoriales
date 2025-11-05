@@ -17,9 +17,9 @@ Ejemplo:  Puede ser API REST (Json) o SOAP (xml)
 
 💡 Analogía: el Web Service es la cocina del restaurante: recibe pedidos (requests) y devuelve platos (responses).
 
-### 2️⃣ SOAP
+### 2️⃣ SOAP (Simple Object Access Protocol - Protocolo simple de acceso a objetos.)
 
-Qué es: un protocolo que define cómo se estructuran los mensajes entre tu aplicación y el Web Service.
+Qué es: un protocolo de comunicación que define cómo se estructuran los mensajes entre tu aplicación y el Web Service.
 
 Qué hace:
 
@@ -31,7 +31,7 @@ Relación con Web Service: es solo la forma de hablarle al Web Service.
 
 💡 Analogía: SOAP es el lenguaje que usan los camareros para transmitir tu pedido a la cocina.
 
-### 3️⃣ WCF
+### 3️⃣ WCF (Windows Communication Foundation - Fundación de Comunicación de Windows.)
 
 Qué es: un framework de .NET para crear Web Services.
 
@@ -39,7 +39,7 @@ Qué hace:
 
 Te permite exponer un Web Service SOAP o REST.
 
-Genera automáticamente el WSDL y los proxies cliente.
+Genera automáticamente el WSDL(Web Services Description Language -Lenguaje de descripción de servicios web.) y los proxies cliente.
 
 Maneja la comunicación, seguridad y bindings.
 
@@ -50,7 +50,36 @@ Ejemplo :
 
 💡 Analogía: WCF es la cocina completa equipada que te permite implementar el restaurante y recibir pedidos con un protocolo definido (SOAP).
 
+### 4️⃣ WSDL(Web Services Description Language -Lenguaje de descripción de servicios web.)
 
+Un archivo XML que describe:
+
+Qué operaciones tiene el servicio.
+
+Qué mensajes acepta y devuelve.
+
+Qué tipos de datos usa.
+
+Dónde está publicado el servicio (la URL del endpoint).
+
+Es el contrato del servicio SOAP.
+Java, .NET, y otros lenguajes lo usan para generar automáticamente las clases necesarias para consumir el servicio.
+
+
+```jsx title="Ejemplo WSDL"
+<wsdl:definitions name="ServiceRestriccionServicio"
+    targetNamespace="http://tempuri.org/">
+  
+  <wsdl:portType name="IServiceRestriccionServicio">
+     <wsdl:operation name="ConsultarRestricciones">
+        <wsdl:input message="tns:ConsultarRestriccionesRequest"/>
+        <wsdl:output message="tns:ConsultarRestriccionesResponse"/>
+     </wsdl:operation>
+  </wsdl:portType>
+
+</wsdl:definitions>
+
+``` 
 
 ![soap](/img/soap.png)
 
@@ -216,13 +245,11 @@ son los objetos que representan el contrato SOAP. Ejemplo: WsRenderParam, WsPDFS
 
     -   Abrí la ventana Maven (derecha → ícono con la taza de café).
 
-    -   Expandí tu proyecto → Plugins.
+    -   Expandí tu proyecto → Lifecycle.
 
-    -   Buscá el plugin (ej: jaxws).
+    -   Buscá Install.
 
-    -   Te va a mostrar el goal disponible (ej: wsimport).
-
-    -   Doble clic en wsimport → genera las clases en la carpeta indicada.
+    -   Genera las clases en la carpeta indicada.
 
 
 
