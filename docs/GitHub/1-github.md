@@ -330,6 +330,198 @@ git branch -a
 ```
 
 
+<br/>
+
+### Guardar cambios actuales en stash
+
+Guarda todos los cambios en progreso (incluye archivos nuevos) para poder cambiar de rama sin perder nada.
+
+1. Guardar el stash
+```jsx title="Ejemplo"
+git stash push -u -m "WIP consultation"
+
+# -u  → incluye archivos no trackeados
+# -m  → agrega descripción al stash
+# Resultado: working tree limpio
+
+```
+
+
+2. Cambiar rama
+
+3. Hace arreglos
+```jsx title="Ejemplo"
+git status
+# Debe mostrar SOLO los archivos del arreglo
+
+```
+
+4. Agregar solo el arreglo al commit
+```jsx title="Ejemplo"
+git add src/main/java/com/odontologiaintegralfm/feature/appointment/core/service/impl/DentistAvailabilityService.java
+
+# Agrega SOLO el fix
+
+```
+
+5. Hacer commit y push
+
+6. Volvemos a la rama anterior para seguir trabajando
+
+7. Recuperar los cambios guardados en stash
+
+8. Recuperar cambios del stash
+
+```jsx title="Ejemplo"
+git stash list
+
+# Verifica el stash (ej: stash@{0})
+```
+
+```jsx title="Ejemplo"
+git stash apply stash@{0}
+
+# Recupera los cambios
+# NO borra el stash todavía
+
+```
+
+```jsx title="Ejemplo"
+git status
+# Debe mostrar los archivos del desarrollo en progreso
+
+```
+
+
+9. Borrar el stash
+
+```jsx title="Ejemplo"
+git stash drop stash@{0}
+
+# Borra definitivamente el stash
+```
+
+
+### Cherry-pick (Sube solo un commit especifico de una rama a otra, en lugar de mergear todo)
+
+1. Identificar el commit que querés traer
+
+```jsx title="Ejemplo"
+git log --oneline
+
+# Copiá el hash del commit (ej: a1b2c3d)
+
+```
+
+Si el commit está en otra rama y no lo ves:
+```jsx title="Ejemplo"
+git log --oneline --all
+
+# Muestra commits de todas las ramas
+```
+
+
+2. Cambiar a la rama DESTINO
+
+3. Aplicar cherry-pick
+
+```jsx title="Ejemplo"
+git cherry-pick a1b2c3d
+
+
+# Aplica el commit indicado
+# Crea un nuevo commit en esta rama
+
+```
+
+4. Verificar que el commit quedó aplicado
+
+```jsx title="Ejemplo"
+git log --oneline -5
+
+# El commit cherry-picked debe aparecer arriba
+
+# -5 son los últimos 5 commit
+```
+
+
+5. subir al remoto con git push directamente, toma el mensaje del commit ya aplicado en la otra rama.
+
+
+6. Cancelar un cherry-pick
+
+```jsx title="Ejemplo"
+git reset --hard HEAD~1
+
+
+# Borra el último commit local
+
+# ⚠️ NO usar si ya hiciste push
+
+```
+
+
+
+<br/>
+
+### Borrar rama REMOTA y LOCAL
+
+1. Borrar ramas
+
+```jsx title="Ejemplo"
+git checkout main
+# Cambiar a otra rama (no podés borrar la actual)
+
+git branch -d nombre-rama
+# Borra la rama local
+
+git push origin --delete nombre-rama
+# Borra la rama remota
+
+```
+
+
+2. Limppiar referencias remotas
+
+```jsx title="Ejemplo"
+git fetch --prune
+
+# Elimina referencias remotas obsoletas
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+### Subir commit con titulo y descripción
+
+1. git commit (enter)
+
+2. Apretar "i"
+
+3. escribir el commit 
+
+```jsx title="Ejemplo"
+fix: add validation to getDentistAvailabilityByDate
+
+Add defensive validation to prevent invalid date requests
+from reaching the availability service.
+```
+
+4. Salir del modo editor con ":wq" (enter)
+
+
+
+
+
 ## **Comandos**
 
 ### *Descartar cambios locales*

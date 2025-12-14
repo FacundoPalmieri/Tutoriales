@@ -496,7 +496,7 @@ Objeto que permite controlar la respuesta HTTP: código de estado, headers y cue
 
 Se pueden manejar globalmente usando @ControllerAdvice y @ExceptionHandler.
 
-------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------
 
 ## BLOQUE 3 Spring Data
 
@@ -580,25 +580,25 @@ Administra el estado de las entidades, las relaciones (@OneToMany, etc.), y la c
 
 "Hibernate es la herramienta que implementa JPA y realiza realmente la conexión entre Java y la base de datos."
 
-
 ---
 
-Spring Data (más general)
+### JDBC 
 
-   ↓
+Hibernate utiliza JDBC en el nivel más bajo para ejecutar las sentencias SQL finales en la base de datos.
 
-Spring Data JPA (usa JPA)
+Hibernate no reemplaza a JDBC.
+Hibernate orquesta, optimiza, genera SQL, administra el contexto de persistencia, pero cuando finalmente tiene que insertar, actualizar, hacer un select o delete,lo hace llamando al driver JDBC proporcionado por la base de datos
 
-   ↓
-
-JPA (define las reglas)
-
-   ↓
-
-Hibernate (las implementa)
-
-   ↓
-   
+Spring Data (repositorios automáticos, consultas derivadas)
+    ↓
+Spring Data JPA (integración con JPA)
+    ↓
+JPA (interfaces: EntityManager, Query, anotaciones, etc.)
+    ↓
+Hibernate (ORM real: SQL generation, dirty checking, caching)
+    ↓
+JDBC (Connection, PreparedStatement, ResultSet)
+    ↓
 Base de datos
 
 ---
